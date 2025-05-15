@@ -1,0 +1,2 @@
+echo "Committing changes..."
+npx lint-staged
