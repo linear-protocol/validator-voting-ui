@@ -56,6 +56,7 @@ export default function Home() {
           <div className="flex items-center w-full h-6 bg-[hsla(0,0%,12%,0.08)] rounded-full relative">
             {PROGRESS.map((p) => (
               <div
+                key={p}
                 className="flex h-full w-0.5 bg-[hsla(0,0%,12%,0.08)] absolute"
                 style={{ left: `${p}%` }}
               ></div>
@@ -68,7 +69,7 @@ export default function Home() {
           <div className="flex items-center h-10 text-base justify-between relative">
             <div>0%</div>
             {PROGRESS.map((p) => (
-              <div className="absolute -translate-x-1/2" style={{ left: `${p}%` }}>
+              <div key={p} className="absolute -translate-x-1/2" style={{ left: `${p}%` }}>
                 {p}%
               </div>
             ))}

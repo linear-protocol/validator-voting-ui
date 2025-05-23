@@ -1,6 +1,7 @@
 import Big from 'big.js';
 import dayjs from 'dayjs';
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useInterval } from 'react-use';
 
 import useNear from '@/hooks/useNear';
 import { logger } from '@/lib/logger';
@@ -11,6 +12,7 @@ export default function useHomePage() {
   const { viewFunction } = useNear();
 
   const [deadline, setDeadline] = useState<number | null>(null);
+  const [countdownSeconds, setCountdownSeconds] = useState<number | null>(null);
   const [votedStakeAmount, setVotedStakeAmount] = useState(Big(0));
   const [totalVotedStakeAmount, setTotalVotedStakeAmount] = useState(Big(0));
 
@@ -20,18 +22,9 @@ export default function useHomePage() {
     return votedStakeAmount.div(totalVotedStakeAmount).times(100).toFixed(2) || '0';
   }, [votedStakeAmount, totalVotedStakeAmount]);
 
-  const deadlineDate = useMemo(() => {
-    if (!deadline) return null;
-    return dayjs(deadline);
-  }, [deadline]);
-
   const deadlineFromNow = useMemo(() => {
-    if (!deadlineDate) return null;
-    const now = dayjs();
-    const diff = now.isBefore(deadlineDate) ? deadlineDate.diff(now) : now.diff(deadlineDate);
-    console.log('diff', diff, deadlineDate.format());
-
-    const diffSeconds = Math.floor(diff / 1000);
+    if (!countdownSeconds) return null;
+    const diffSeconds = countdownSeconds;
     const diffMinutes = Math.floor(diffSeconds / 60);
     const diffHours = Math.floor(diffMinutes / 60);
     const diffDays = Math.floor(diffHours / 24);
@@ -46,7 +39,7 @@ export default function useHomePage() {
       hours: hours.toString().padStart(2, '0'),
       days: days.toString().padStart(2, '0'),
     };
-  }, [deadlineDate]);
+  }, [countdownSeconds]);
 
   const getTotalVotedStake = useCallback(async () => {
     const data = await viewFunction({
@@ -84,7 +77,13 @@ export default function useHomePage() {
       method: 'get_deadline_timestamp',
     });
     logger.debug('get_deadline_timestamp', data);
+    if (!data) return;
     setDeadline(data);
+    const now = dayjs();
+    const then = dayjs(data);
+    const diff = now.isBefore(then) ? then.diff(now) : now.diff(then);
+    const diffSeconds = Math.floor(diff / 1000);
+    setCountdownSeconds(diffSeconds);
   }, [viewFunction]);
 
   const getProposal = useCallback(async () => {
@@ -103,9 +102,17 @@ export default function useHomePage() {
     getProposal();
   }, [getTotalVotedStake, getResult, getVotes, getDeadline, getProposal]);
 
+  useInterval(
+    () => {
+      if (!deadline) return;
+      setCountdownSeconds((s) => (s ? s - 1 : s));
+    },
+    deadline ? 1000 : null,
+  );
+
   return {
     votedPercent,
-    deadlineDate,
+    deadline,
     deadlineFromNow,
   };
 }
