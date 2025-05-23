@@ -1,0 +1,111 @@
+import Big from 'big.js';
+import dayjs from 'dayjs';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+
+import useNear from '@/hooks/useNear';
+import { logger } from '@/lib/logger';
+
+const contractId = 'mock-proposal.testnet';
+
+export default function useHomePage() {
+  const { viewFunction } = useNear();
+
+  const [deadline, setDeadline] = useState<number | null>(null);
+  const [votedStakeAmount, setVotedStakeAmount] = useState(Big(0));
+  const [totalVotedStakeAmount, setTotalVotedStakeAmount] = useState(Big(0));
+
+  const votedPercent = useMemo(() => {
+    if (!totalVotedStakeAmount) return '0';
+    if (totalVotedStakeAmount.eq(0)) return '0';
+    return votedStakeAmount.div(totalVotedStakeAmount).times(100).toFixed(2) || '0';
+  }, [votedStakeAmount, totalVotedStakeAmount]);
+
+  const deadlineDate = useMemo(() => {
+    if (!deadline) return null;
+    return dayjs(deadline);
+  }, [deadline]);
+
+  const deadlineFromNow = useMemo(() => {
+    if (!deadlineDate) return null;
+    const now = dayjs();
+    const diff = now.isBefore(deadlineDate) ? deadlineDate.diff(now) : now.diff(deadlineDate);
+    console.log('diff', diff, deadlineDate.format());
+
+    const diffSeconds = Math.floor(diff / 1000);
+    const diffMinutes = Math.floor(diffSeconds / 60);
+    const diffHours = Math.floor(diffMinutes / 60);
+    const diffDays = Math.floor(diffHours / 24);
+
+    const seconds = diffSeconds % 60;
+    const minutes = diffMinutes % 60;
+    const hours = diffHours % 24;
+    const days = diffDays;
+    return {
+      seconds: seconds.toString().padStart(2, '0'),
+      minutes: minutes.toString().padStart(2, '0'),
+      hours: hours.toString().padStart(2, '0'),
+      days: days.toString().padStart(2, '0'),
+    };
+  }, [deadlineDate]);
+
+  const getTotalVotedStake = useCallback(async () => {
+    const data = await viewFunction({
+      contractId: contractId,
+      method: 'get_total_voted_stake',
+    });
+    logger.debug('get_total_voted_stake', data);
+    if (!Array.isArray(data) && data.length !== 2) {
+      logger.error('get_total_voted_stake error', data);
+      return;
+    }
+    setVotedStakeAmount(Big(data[0]));
+    setTotalVotedStakeAmount(Big(data[1]));
+  }, [viewFunction]);
+
+  const getResult = useCallback(async () => {
+    const data = await viewFunction({
+      contractId: contractId,
+      method: 'get_result',
+    });
+    logger.debug('get_result', data);
+  }, [viewFunction]);
+
+  const getVotes = useCallback(async () => {
+    const data = await viewFunction({
+      contractId: contractId,
+      method: 'get_votes',
+    });
+    logger.debug('get_votes', data);
+  }, [viewFunction]);
+
+  const getDeadline = useCallback(async () => {
+    const data = await viewFunction({
+      contractId: contractId,
+      method: 'get_deadline_timestamp',
+    });
+    logger.debug('get_deadline_timestamp', data);
+    setDeadline(data);
+  }, [viewFunction]);
+
+  const getProposal = useCallback(async () => {
+    const data = await viewFunction({
+      contractId: contractId,
+      method: 'get_proposal',
+    });
+    logger.debug('get_proposal', data);
+  }, [viewFunction]);
+
+  useEffect(() => {
+    getTotalVotedStake();
+    getResult();
+    getVotes();
+    getDeadline();
+    getProposal();
+  }, [getTotalVotedStake, getResult, getVotes, getDeadline, getProposal]);
+
+  return {
+    votedPercent,
+    deadlineDate,
+    deadlineFromNow,
+  };
+}

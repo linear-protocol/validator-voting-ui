@@ -1,11 +1,5 @@
-import { Button } from '@/components/ui/button';
+import Router from '@/router';
 
-function App() {
-  return (
-    <div className="flex flex-col items-center justify-center min-h-svh">
-      <Button>Vote Now</Button>
-    </div>
-  );
+export default function App() {
+  return <Router />;
 }
-
-export default App;
