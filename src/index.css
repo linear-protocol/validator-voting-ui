@@ -9,6 +9,10 @@
   --color-app-black-600: hsla(0, 0%, 12%, 0.6);
   --color-app-black-800: hsla(0, 0%, 12%, 0.8);
 
+  --color-app-brown: hsla(44, 100%, 38%, 1);
+
+  --color-app-green: hsla(158, 94%, 47%, 1);
+
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);

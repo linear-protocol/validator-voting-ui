@@ -1,31 +1,61 @@
 import './index.css';
 
+import Big from 'big.js';
+import { ArrowRight } from 'lucide-react';
 import { useMemo } from 'react';
+import { PulseLoader } from 'react-spinners';
 
+import NEARLogo from '@/assets/icons/near.svg?react';
+// import ApprovedImg from '@/assets/images/approved.png';
 import Bg1 from '@/assets/images/home-star-bg1.png';
 import Bg2 from '@/assets/images/home-star-bg2.png';
+import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 
 import useHomePage from './hooks';
 
 const PROGRESS = [41, 66.67];
 
+function formatNearNumber(nearNum: Big.Big) {
+  if (!nearNum) return '0';
+  if (nearNum.eq(0)) return '0';
+  const bigNum = Big(nearNum).div(Big(10).pow(24));
+  const numStr = bigNum.toFixed();
+  const len = numStr.replace(/\D/g, '').length;
+
+  if (len > 12) {
+    return bigNum.div(Big('1e12')).toFixed(2) + 'T'; // Trillions
+  }
+  if (len > 9) {
+    return bigNum.div(Big('1e9')).toFixed(2) + 'B'; // Billions
+  }
+  if (len > 6) {
+    return bigNum.div(Big('1e6')).toFixed(2) + 'M'; // Millions
+  }
+  if (len > 3) {
+    return bigNum.div(Big('1e3')).toFixed(2) + 'K'; // Thousands
+  }
+  return bigNum.toString();
+}
+
 export default function Home() {
-  const { votedPercent, deadlineFromNow } = useHomePage();
+  const { ready, votes, votedPercent, votedStakeAmount, deadlineFromNow } = useHomePage();
 
   const passed = useMemo(() => {
     return Number(votedPercent) >= PROGRESS[PROGRESS.length - 1];
   }, [votedPercent]);
 
-  return (
-    <div className="flex flex-col relative w-full min-h-screen pb-10 px-6 md:px-0">
-      <img src={Bg1} alt="" className="absolute left-0 top-0 hidden md:flex" width={280} />
-      <img src={Bg2} alt="" className="absolute right-0 top-0 hidden md:flex" width={280} />
-      <div className="md:w-[654px] w-full mx-auto flex flex-col items-center bg-white z-[2] flex-1">
-        <h1 className="text-[28px] sm:text-[40px] font-semibold py-8 sm:py-10 mb-10 text-app-black">
-          Reduce NEAR's Inflation
-        </h1>
+  const renderContent = () => {
+    if (!ready) {
+      return (
+        <div className="flex flex-col w-full items-center justify-center h-80">
+          <PulseLoader />
+        </div>
+      );
+    }
 
+    return (
+      <>
         {/* progress bar */}
         <div className="flex flex-col w-full relative mb-10">
           <div
@@ -106,7 +136,39 @@ export default function Home() {
           </div>
         )}
 
-        {/* content */}
+        {/* approved */}
+        {/* <div className="flex flex-col items-center mb-10">
+          <img src={ApprovedImg} className="h-[72px]" alt="" />
+        </div> */}
+
+        <div className="flex items-center text-app-brown text-lg mb-5">
+          {Object.keys(votes).length} votes & {formatNearNumber(votedStakeAmount)} NEAR
+          <NEARLogo height={18} width={90} />
+          Voting Power for YAE
+        </div>
+
+        <div className="flex items-center mb-22">
+          <Button size="lg" className="bg-app-green h-14 text-lg text-app-black w-[184px]">
+            Votes details
+            <ArrowRight height={60} />
+          </Button>
+        </div>
+      </>
+    );
+  };
+
+  return (
+    <div className="flex flex-col relative w-full min-h-screen pb-10 px-6 md:px-0">
+      <img src={Bg1} alt="" className="absolute left-0 top-0 hidden md:flex" width={280} />
+      <img src={Bg2} alt="" className="absolute right-0 top-0 hidden md:flex" width={280} />
+      <div className="md:w-[654px] w-full mx-auto flex flex-col items-center bg-white z-[2] flex-1">
+        <h1 className="text-[28px] sm:text-[40px] font-semibold py-8 sm:py-10 mb-10 text-app-black">
+          Reduce NEAR's Inflation
+        </h1>
+
+        {renderContent()}
+
+        {/* article */}
         <div className="flex flex-col">
           <h3 className="text-xl text-app-black font-semibold mb-3">Reduce near's inflation</h3>
           <p className="mb-3">

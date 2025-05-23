@@ -11,7 +11,9 @@ const contractId = 'mock-proposal.testnet';
 export default function useHomePage() {
   const { viewFunction } = useNear();
 
+  const [ready, setReady] = useState(false);
   const [deadline, setDeadline] = useState<number | null>(null);
+  const [votes, setVotes] = useState<Record<string, string>[]>([]);
   const [countdownSeconds, setCountdownSeconds] = useState<number | null>(null);
   const [votedStakeAmount, setVotedStakeAmount] = useState(Big(0));
   const [totalVotedStakeAmount, setTotalVotedStakeAmount] = useState(Big(0));
@@ -69,6 +71,7 @@ export default function useHomePage() {
       method: 'get_votes',
     });
     logger.debug('get_votes', data);
+    setVotes(data || {});
   }, [viewFunction]);
 
   const getDeadline = useCallback(async () => {
@@ -86,21 +89,24 @@ export default function useHomePage() {
     setCountdownSeconds(diffSeconds);
   }, [viewFunction]);
 
-  const getProposal = useCallback(async () => {
-    const data = await viewFunction({
-      contractId: contractId,
-      method: 'get_proposal',
-    });
-    logger.debug('get_proposal', data);
-  }, [viewFunction]);
+  // const getProposal = useCallback(async () => {
+  //   const data = await viewFunction({
+  //     contractId: contractId,
+  //     method: 'get_proposal',
+  //   });
+  //   logger.debug('get_proposal', data);
+  // }, [viewFunction]);
 
   useEffect(() => {
-    getTotalVotedStake();
-    getResult();
-    getVotes();
-    getDeadline();
-    getProposal();
-  }, [getTotalVotedStake, getResult, getVotes, getDeadline, getProposal]);
+    Promise.all([getTotalVotedStake(), getResult(), getVotes(), getDeadline()])
+      .then(() => {
+        setReady(true);
+      })
+      .catch((e) => {
+        logger.error('Failed to fetch data', e);
+        setReady(false);
+      });
+  }, [getTotalVotedStake, getResult, getVotes, getDeadline]);
 
   useInterval(
     () => {
@@ -111,8 +117,12 @@ export default function useHomePage() {
   );
 
   return {
+    ready,
+    votes,
     votedPercent,
     deadline,
     deadlineFromNow,
+    votedStakeAmount,
+    totalVotedStakeAmount,
   };
 }
