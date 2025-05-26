@@ -1,17 +1,22 @@
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 
+import VoteContainer from '@/containers/vote';
 import GlobalLayout from '@/layouts/global';
+import Details from '@/pages/details';
 import Home from '@/pages/home';
 
 export default function AppRouter() {
   return (
     <Router>
-      <GlobalLayout>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="*" element={<Fallback />} />
-        </Routes>
-      </GlobalLayout>
+      <VoteContainer.Provider>
+        <GlobalLayout>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/details" element={<Details />} />
+            <Route path="*" element={<Fallback />} />
+          </Routes>
+        </GlobalLayout>
+      </VoteContainer.Provider>
     </Router>
   );
 }

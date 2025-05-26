@@ -1,49 +1,92 @@
 import './index.css';
 
-import Big from 'big.js';
-import { ArrowRight } from 'lucide-react';
-import { useMemo } from 'react';
+import dayjs from 'dayjs';
+import { ArrowRight, CircleHelp } from 'lucide-react';
+import { useEffect, useMemo, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { PulseLoader } from 'react-spinners';
+import { useInterval } from 'react-use';
 
 import NEARLogo from '@/assets/icons/near.svg?react';
-// import ApprovedImg from '@/assets/images/approved.png';
+import ApprovedImg from '@/assets/images/approved.png';
 import Bg1 from '@/assets/images/home-star-bg1.png';
 import Bg2 from '@/assets/images/home-star-bg2.png';
 import { Button } from '@/components/ui/button';
-import { cn } from '@/lib/utils';
-
-import useHomePage from './hooks';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import VoteContainer from '@/containers/vote';
+import { cn, formatBigNumber } from '@/lib/utils';
 
 const PROGRESS = [41, 66.67];
 
-function formatNearNumber(nearNum: Big.Big) {
-  if (!nearNum) return '0';
-  if (nearNum.eq(0)) return '0';
-  const bigNum = Big(nearNum).div(Big(10).pow(24));
-  const numStr = bigNum.toFixed();
-  const len = numStr.replace(/\D/g, '').length;
-
-  if (len > 12) {
-    return bigNum.div(Big('1e12')).toFixed(2) + 'T'; // Trillions
-  }
-  if (len > 9) {
-    return bigNum.div(Big('1e9')).toFixed(2) + 'B'; // Billions
-  }
-  if (len > 6) {
-    return bigNum.div(Big('1e6')).toFixed(2) + 'M'; // Millions
-  }
-  if (len > 3) {
-    return bigNum.div(Big('1e3')).toFixed(2) + 'K'; // Thousands
-  }
-  return bigNum.toString();
-}
-
 export default function Home() {
-  const { ready, votes, votedPercent, votedStakeAmount, deadlineFromNow } = useHomePage();
+  const navigate = useNavigate();
+  const { ready, deadline, votes, votedPercent, voteFinishedAt, votedStakeAmount } =
+    VoteContainer.useContainer();
+
+  const [countdownSeconds, setCountdownSeconds] = useState<number | null>(null);
 
   const passed = useMemo(() => {
     return Number(votedPercent) >= PROGRESS[PROGRESS.length - 1];
   }, [votedPercent]);
+
+  const showTooltip = useMemo(() => {
+    if (voteFinishedAt) return false;
+    return passed;
+  }, [voteFinishedAt, passed]);
+
+  const deadlineFromNow = useMemo(() => {
+    if (!countdownSeconds) return null;
+    const diffSeconds = countdownSeconds;
+    const diffMinutes = Math.floor(diffSeconds / 60);
+    const diffHours = Math.floor(diffMinutes / 60);
+    const diffDays = Math.floor(diffHours / 24);
+
+    const seconds = diffSeconds % 60;
+    const minutes = diffMinutes % 60;
+    const hours = diffHours % 24;
+    const days = diffDays;
+    return {
+      seconds: seconds.toString().padStart(2, '0'),
+      minutes: minutes.toString().padStart(2, '0'),
+      hours: hours.toString().padStart(2, '0'),
+      days: days.toString().padStart(2, '0'),
+    };
+  }, [countdownSeconds]);
+
+  const renderVoteProgressStatus = () => {
+    if (!voteFinishedAt) {
+      if (!deadlineFromNow) return null;
+      return (
+        <div className="flex flex-col items-center mb-10">
+          <h3 className="text-app-black-400 text-lg font-semibold mb-4">Voting Progress</h3>
+          <div className="flex items-center gap-x-9">
+            <div className="flex flex-col items-center">
+              <div className="text-app-black text-[56px] font-bold">{deadlineFromNow.days}</div>
+              <div className="text-app-black-600 text-xl">Days</div>
+            </div>
+            <div className="flex flex-col items-center">
+              <div className="text-app-black text-[56px] font-bold">{deadlineFromNow.hours}</div>
+              <div className="text-app-black-600 text-xl">HRS</div>
+            </div>
+            <div className="flex flex-col items-center">
+              <div className="text-app-black text-[56px] font-bold">{deadlineFromNow.minutes}</div>
+              <div className="text-app-black-600 text-xl">MINS</div>
+            </div>
+            <div className="flex flex-col items-center">
+              <div className="text-app-black text-[56px] font-bold">{deadlineFromNow.seconds}</div>
+              <div className="text-app-black-600 text-xl">SECS</div>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    return (
+      <div className="flex flex-col items-center mb-10">
+        <img src={ApprovedImg} className="h-[72px]" alt="" />
+      </div>
+    );
+  };
 
   const renderContent = () => {
     if (!ready) {
@@ -108,47 +151,34 @@ export default function Home() {
         </div>
 
         {/* voting process status */}
-        {deadlineFromNow && (
-          <div className="flex flex-col items-center mb-10">
-            <h3 className="text-app-black-400 text-lg font-semibold mb-4">Voting Progress</h3>
-            <div className="flex items-center gap-x-9">
-              <div className="flex flex-col items-center">
-                <div className="text-app-black text-[56px] font-bold">{deadlineFromNow.days}</div>
-                <div className="text-app-black-600 text-xl">Days</div>
-              </div>
-              <div className="flex flex-col items-center">
-                <div className="text-app-black text-[56px] font-bold">{deadlineFromNow.hours}</div>
-                <div className="text-app-black-600 text-xl">HRS</div>
-              </div>
-              <div className="flex flex-col items-center">
-                <div className="text-app-black text-[56px] font-bold">
-                  {deadlineFromNow.minutes}
-                </div>
-                <div className="text-app-black-600 text-xl">MINS</div>
-              </div>
-              <div className="flex flex-col items-center">
-                <div className="text-app-black text-[56px] font-bold">
-                  {deadlineFromNow.seconds}
-                </div>
-                <div className="text-app-black-600 text-xl">SECS</div>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* approved */}
-        {/* <div className="flex flex-col items-center mb-10">
-          <img src={ApprovedImg} className="h-[72px]" alt="" />
-        </div> */}
+        {renderVoteProgressStatus()}
 
         <div className="flex items-center text-app-brown text-lg mb-5">
-          {Object.keys(votes).length} votes & {formatNearNumber(votedStakeAmount)} NEAR
+          {Object.keys(votes).length} votes & {formatBigNumber(votedStakeAmount)} NEAR
           <NEARLogo height={18} width={90} />
           Voting Power for YAE
+          {!showTooltip && (
+            <Popover>
+              <PopoverTrigger>
+                <CircleHelp className="ml-2 -mt-0.5" />
+              </PopoverTrigger>
+              <PopoverContent sideOffset={20}>
+                The proposal will pass if the total voted stake keeps above 2/3 at the beginning of
+                next epoch or a new vote comes in.
+              </PopoverContent>
+            </Popover>
+          )}
         </div>
 
         <div className="flex items-center mb-22">
-          <Button size="lg" className="bg-app-green h-14 text-lg text-app-black w-[184px]">
+          <Button
+            size="lg"
+            className="bg-app-green hover:bg-app-green cursor-pointer hover:opacity-75 h-14 text-lg text-app-black w-[184px]"
+            onClick={(ev) => {
+              ev.stopPropagation();
+              navigate('/details');
+            }}
+          >
             Votes details
             <ArrowRight height={60} />
           </Button>
@@ -156,6 +186,23 @@ export default function Home() {
       </>
     );
   };
+
+  useEffect(() => {
+    if (!deadline) return;
+    const now = dayjs();
+    const then = dayjs(deadline);
+    const diff = now.isBefore(then) ? then.diff(now) : now.diff(then);
+    const diffSeconds = Math.floor(diff / 1000);
+    setCountdownSeconds(diffSeconds);
+  }, [deadline]);
+
+  useInterval(
+    () => {
+      if (!deadline) return;
+      setCountdownSeconds((s) => (s ? s - 1 : s));
+    },
+    deadline ? 1000 : null,
+  );
 
   return (
     <div className="flex flex-col relative w-full min-h-screen pb-10 px-6 md:px-0">

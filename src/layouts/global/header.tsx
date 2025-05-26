@@ -3,7 +3,7 @@ import LinearImg from '@/assets/images/linear.png';
 
 export default function Header() {
   return (
-    <div className="flex items-center justify-between px-6 h-20 mb-6">
+    <div className="flex items-center justify-between px-6 sm:px-10 h-20 mb-6">
       <div className="flex items-center">
         <NEARLogo height={30} />
       </div>

@@ -13,8 +13,11 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@radix-ui/react-avatar": "^1.1.10",
+    "@radix-ui/react-popover": "^1.1.14",
     "@radix-ui/react-slot": "^1.2.2",
     "@tailwindcss/vite": "^4.1.6",
+    "@tanstack/react-table": "^8.21.3",
     "axios": "^1.9.0",
     "big.js": "^7.0.1",
     "class-variance-authority": "^0.7.1",

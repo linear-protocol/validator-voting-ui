@@ -5,6 +5,7 @@
 
 @theme inline {
   --color-app-black: hsla(0, 0%, 12%, 1);
+  --color-app-black-120: hsla(0, 0%, 0%, 0.12);
   --color-app-black-400: hsla(0, 0%, 12%, 0.4);
   --color-app-black-600: hsla(0, 0%, 12%, 0.6);
   --color-app-black-800: hsla(0, 0%, 12%, 0.8);
