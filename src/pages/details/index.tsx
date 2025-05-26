@@ -4,16 +4,20 @@ import { ArrowLeft } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+import GreenCheck from '@/assets/icons/green-check.svg?react';
+import RightTopArrow from '@/assets/icons/right-top-arrow.svg?react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Skeleton } from '@/components/ui/skeleton';
 import {
     Table, TableBody, TableCell, TableHead, TableHeader, TableRow
 } from '@/components/ui/table';
+import config from '@/config';
 import VoteContainer from '@/containers/vote';
 import { formatBigNumber } from '@/lib/utils';
 import { getValidators } from '@/services';
 
 import type { ValidatorItem } from '@/services';
+
 export default function Details() {
   const navigate = useNavigate();
 
@@ -26,6 +30,14 @@ export default function Details() {
     if (!votedStakeAmount || !n) return '0';
     if (Big(votedStakeAmount).eq(0)) return '0';
     return Big(n).div(votedStakeAmount).times(100).toFixed(2);
+  };
+
+  const getNearBlocksLink = (addr: string) => {
+    if (!addr) return '';
+    if (config.near.network.networkId === 'testnet') {
+      return `https://testnet.nearblocks.io/address/${addr}`;
+    }
+    return `https://nearblocks.io/address/${addr}`;
   };
 
   useEffect(() => {
@@ -83,7 +95,18 @@ export default function Details() {
                     </Avatar>
                     {item.accountId}
                   </TableCell>
-                  <TableCell className="h-[60px]">{item.isVoted}</TableCell>
+                  <TableCell className="h-[60px]">
+                    <a
+                      href={getNearBlocksLink(item.accountId)}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="text-app-blue hover:underline flex items-center gap-1.5"
+                    >
+                      <GreenCheck className="-mt-1" />
+                      YAE
+                      <RightTopArrow />
+                    </a>
+                  </TableCell>
                   <TableCell className="h-[60px] py-0">
                     <div className="text-base mb-1">{relativeTime}</div>
                     <div className="text-app-black-800 text-xs">

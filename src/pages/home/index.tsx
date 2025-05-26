@@ -58,23 +58,31 @@ export default function Home() {
       if (!deadlineFromNow) return null;
       return (
         <div className="flex flex-col items-center mb-10">
-          <h3 className="text-app-black-400 text-lg font-semibold mb-4">Voting Progress</h3>
-          <div className="flex items-center gap-x-9">
+          <h3 className="text-app-black-400 text-base sm:text-lg mb-4">VOTING PROGRESS</h3>
+          <div className="flex items-center gap-x-5 sm:gap-x-9">
             <div className="flex flex-col items-center">
-              <div className="text-app-black text-[56px] font-bold">{deadlineFromNow.days}</div>
-              <div className="text-app-black-600 text-xl">Days</div>
+              <div className="text-app-black text-4xl sm:text-[56px] font-bold">
+                {deadlineFromNow.days}
+              </div>
+              <div className="text-app-black-600 text-base sm:text-xl">Days</div>
             </div>
             <div className="flex flex-col items-center">
-              <div className="text-app-black text-[56px] font-bold">{deadlineFromNow.hours}</div>
-              <div className="text-app-black-600 text-xl">HRS</div>
+              <div className="text-app-black text-4xl sm:text-[56px] font-bold">
+                {deadlineFromNow.hours}
+              </div>
+              <div className="text-app-black-600 text-base sm:text-xl">HRS</div>
             </div>
             <div className="flex flex-col items-center">
-              <div className="text-app-black text-[56px] font-bold">{deadlineFromNow.minutes}</div>
-              <div className="text-app-black-600 text-xl">MINS</div>
+              <div className="text-app-black text-4xl sm:text-[56px] font-bold">
+                {deadlineFromNow.minutes}
+              </div>
+              <div className="text-app-black-600 text-base sm:text-xl">MINS</div>
             </div>
             <div className="flex flex-col items-center">
-              <div className="text-app-black text-[56px] font-bold">{deadlineFromNow.seconds}</div>
-              <div className="text-app-black-600 text-xl">SECS</div>
+              <div className="text-app-black text-4xl sm:text-[56px] font-bold">
+                {deadlineFromNow.seconds}
+              </div>
+              <div className="text-app-black-600 text-base sm:text-xl">SECS</div>
             </div>
           </div>
         </div>
@@ -153,21 +161,23 @@ export default function Home() {
         {/* voting process status */}
         {renderVoteProgressStatus()}
 
-        <div className="flex items-center text-app-brown text-lg mb-5">
+        <div className="flex items-center justify-center text-app-brown text-base sm:text-lg mb-5 gap-1 flex-wrap">
           {Object.keys(votes).length} votes & {formatBigNumber(votedStakeAmount)} NEAR
-          <NEARLogo height={18} width={90} />
-          Voting Power for YAE
-          {!showTooltip && (
-            <Popover>
-              <PopoverTrigger>
-                <CircleHelp className="ml-2 -mt-0.5" />
-              </PopoverTrigger>
-              <PopoverContent sideOffset={20}>
-                The proposal will pass if the total voted stake keeps above 2/3 at the beginning of
-                next epoch or a new vote comes in.
-              </PopoverContent>
-            </Popover>
-          )}
+          <NEARLogo className="sm:h-4 sm:w-20 h-3 w-16" />
+          <div className="flex items-center">
+            Voting Power for YAE
+            {!showTooltip && (
+              <Popover>
+                <PopoverTrigger>
+                  <CircleHelp className="ml-1 sm:ml-2 -mt-0.5 w-5 h-5 sm:w-6 sm:h-6" />
+                </PopoverTrigger>
+                <PopoverContent sideOffset={20}>
+                  The proposal will pass if the total voted stake keeps above 2/3 at the beginning
+                  of next epoch or a new vote comes in.
+                </PopoverContent>
+              </Popover>
+            )}
+          </div>
         </div>
 
         <div className="flex items-center mb-22">

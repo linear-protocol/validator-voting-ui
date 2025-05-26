@@ -17,16 +17,16 @@ export function formatBigNumber(num: Big.Big | string | number, decimals = 24): 
   const len = numStr.replace(/\D/g, '').length;
 
   if (len > 12) {
-    return bigNum.div(Big('1e12')).toFixed(2) + 'T'; // Trillions
+    return bigNum.div(Big('1e12')).toFixed(1) + 'T'; // Trillions
   }
   if (len > 9) {
-    return bigNum.div(Big('1e9')).toFixed(2) + 'B'; // Billions
+    return bigNum.div(Big('1e9')).toFixed(1) + 'B'; // Billions
   }
   if (len > 6) {
-    return bigNum.div(Big('1e6')).toFixed(2) + 'M'; // Millions
+    return bigNum.div(Big('1e6')).toFixed(1) + 'M'; // Millions
   }
   if (len > 3) {
-    return bigNum.div(Big('1e3')).toFixed(2) + 'K'; // Thousands
+    return bigNum.div(Big('1e3')).toFixed(1) + 'K'; // Thousands
   }
   return bigNum.toString();
 }
