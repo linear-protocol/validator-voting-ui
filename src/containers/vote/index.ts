@@ -93,10 +93,10 @@ function useVoteContainer(): UseVoteContainer {
       const promises = Promise.all([getTotalVotedStake(), getResult(), getVotes(), getDeadline()]);
       return await promises;
     },
-    {
-      revalidateOnFocus: false,
-      revalidateOnReconnect: false,
-    },
+    // {
+    //   revalidateOnFocus: false,
+    //   revalidateOnReconnect: false,
+    // },
   );
 
   return {
