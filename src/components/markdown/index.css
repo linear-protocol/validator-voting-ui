@@ -7,7 +7,7 @@
   }
   ul {
     padding-left: 1.5em;
-    margin-bottom: 1em;
+    margin: 0.5em 0;
   }
   li {
     list-style-type: disc;
@@ -15,5 +15,8 @@
   a {
     cursor: pointer;
     color: #0052CC;
+  }
+  p {
+    margin: 0.5em 0;
   }
 }

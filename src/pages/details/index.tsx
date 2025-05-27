@@ -9,12 +9,7 @@ import RightTopArrow from '@/assets/icons/right-top-arrow.svg?react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Skeleton } from '@/components/ui/skeleton';
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
+    Table, TableBody, TableCell, TableHead, TableHeader, TableRow
 } from '@/components/ui/table';
 import config from '@/config';
 import VoteContainer from '@/containers/vote';
@@ -102,7 +97,7 @@ export default function Details() {
                   className="flex items-center justify-end gap-0.5"
                   onClick={() => setPowerOrder(powerOrder === 'asc' ? 'desc' : 'asc')}
                 >
-                  Voting power
+                  Voting Power
                   {powerOrder === 'asc' ? (
                     <MoveDown className="h-4" />
                   ) : (
