@@ -213,9 +213,7 @@ export default function Home() {
             content={
               'Vote with NEAR CLI\n' +
               '```bash\n' +
-              `near call <validator-account-id> vote '{"voting_account_id":"${config.proposalContractId}","is_vote":true}'
-          --accountId <validator-owner-id>
-          --gas 200000000000000\n` +
+              `near call <validator-account-id> vote '{"voting_account_id":"${config.proposalContractId}","is_vote":true}' --accountId <validator-owner-id> --gas 200000000000000\n` +
               '```'
             }
           />
