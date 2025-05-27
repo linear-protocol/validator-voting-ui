@@ -3,8 +3,8 @@ const config: App.AppConfig = {
   validatorApi: 'https://validator-voting-api.linearprotocol.org',
   near: {
     network: {
-      networkId: 'testnet',
-      nodeUrl: 'https://neart.lava.build',
+      networkId: 'mainnet',
+      nodeUrl: 'https://near.lava.build',
     },
   },
 };

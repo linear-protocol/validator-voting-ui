@@ -1,7 +1,7 @@
 import Big from 'big.js';
 import dayjs from 'dayjs';
-import { ArrowLeft } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { ArrowLeft, MoveDown } from 'lucide-react';
+import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import GreenCheck from '@/assets/icons/green-check.svg?react';
@@ -26,23 +26,41 @@ import type { ValidatorItem } from '@/services';
 export default function Details() {
   const navigate = useNavigate();
 
-  const { votes, votedStakeAmount } = VoteContainer.useContainer();
+  const { votes, totalVotedStakeAmount } = VoteContainer.useContainer();
 
   const [loading, setLoading] = useState(false);
   const [list, setList] = useState<ValidatorItem[]>([]);
+  const [powerOrder, setPowerOrder] = useState<'asc' | 'desc'>('asc');
+
+  const tableList = useMemo(() => {
+    if (!list || !list.length) return [];
+    if (powerOrder === 'desc') {
+      return list.sort((a, b) => {
+        const aVote = votes[a.accountId] || '0';
+        const bVote = votes[b.accountId] || '0';
+        return Big(aVote).minus(Big(bVote)).toNumber();
+      });
+    }
+
+    return list.sort((a, b) => {
+      const aVote = votes[a.accountId] || '0';
+      const bVote = votes[b.accountId] || '0';
+      return Big(bVote).minus(Big(aVote)).toNumber();
+    });
+  }, [list, powerOrder, votes]);
 
   const getPercent = (n: string | number) => {
-    if (!votedStakeAmount || !n) return '0';
-    if (Big(votedStakeAmount).eq(0)) return '0';
-    return Big(n).div(votedStakeAmount).times(100).toFixed(2);
+    if (!totalVotedStakeAmount || !n) return '0';
+    if (Big(totalVotedStakeAmount).eq(0)) return '0';
+    return Big(n).div(totalVotedStakeAmount).times(100).toFixed(2);
   };
 
   const getNearBlocksLink = (hash: string) => {
     if (!hash) return '';
     if (config.near.network.networkId === 'testnet') {
-      return `https://testnet.nearblocks.io/txns/${hash}`;
+      return `https://testnet.nearblocks.io/hash/${hash}`;
     }
-    return `https://nearblocks.io/txns/${hash}`;
+    return `https://nearblocks.io/hash/${hash}`;
   };
 
   useEffect(() => {
@@ -79,14 +97,28 @@ export default function Details() {
               <TableHead>Validator</TableHead>
               <TableHead>Choice</TableHead>
               <TableHead>Date</TableHead>
-              <TableHead className="text-right">Voting power</TableHead>
+              <TableHead className="text-right cursor-pointer">
+                <div
+                  className="flex items-center justify-end gap-0.5"
+                  onClick={() => setPowerOrder(powerOrder === 'asc' ? 'desc' : 'asc')}
+                >
+                  Voting power
+                  {powerOrder === 'asc' ? (
+                    <MoveDown className="h-4" />
+                  ) : (
+                    <MoveDown className="rotate-180 h-4" />
+                  )}
+                </div>
+              </TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {list.map((item) => {
+            {tableList.map((item) => {
               const voteData = votes[item.accountId] || '0';
               const num = voteData ? formatBigNumber(voteData, 24) : '0';
               const percent = getPercent(voteData);
+              if (item.accountId === 'mock-validator-194.testnet')
+                console.log('voteData', item.accountId, voteData, num, percent);
               const relativeTime = dayjs(item.lastVoteTimestamp).fromNow();
 
               return (
@@ -119,7 +151,7 @@ export default function Details() {
                     </div>
                   </TableCell>
                   <TableCell className="h-[60px] py-0 text-right">
-                    <div className="text-base mb-1">{num} AAVE</div>
+                    <div className="text-base mb-1">{num} NEAR</div>
                     <div className="text-app-black-800 text-xs">{percent}%</div>
                   </TableCell>
                 </TableRow>

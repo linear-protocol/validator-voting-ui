@@ -16,17 +16,49 @@ export function formatBigNumber(num: Big.Big | string | number, decimals = 24): 
   const numStr = bigNum.toFixed();
   const len = numStr.replace(/\D/g, '').length;
 
+  let unit = '';
+  let result = bigNum;
+
   if (len > 12) {
-    return bigNum.div(Big('1e12')).toFixed(2) + 'T'; // Trillions
+    unit = 'T'; // Trillions
+    result = bigNum.div(Big('1e12'));
+  } else if (len > 9) {
+    unit = 'B'; // Billions
+    result = bigNum.div(Big('1e9'));
+  } else if (len > 6) {
+    unit = 'M'; // Millions
+    result = bigNum.div(Big('1e6'));
+  } else if (len > 3) {
+    unit = 'K'; // Thousands
+    result = bigNum.div(Big('1e3'));
   }
-  if (len > 9) {
-    return bigNum.div(Big('1e9')).toFixed(2) + 'B'; // Billions
+
+  if (result.lt(1)) {
+    return bigNum.toFixed(2);
   }
-  if (len > 6) {
-    return bigNum.div(Big('1e6')).toFixed(2) + 'M'; // Millions
-  }
-  if (len > 3) {
-    return bigNum.div(Big('1e3')).toFixed(2) + 'K'; // Thousands
-  }
-  return bigNum.toString();
+  return result.toFixed(2) + unit;
 }
+
+const testNumbers = [
+  '0',
+  '1000000000000000000000000',
+  '2000000000000000000000000',
+  '20000000000000000000000000',
+  '212100000000000000000000000',
+  '1000000000000000000000000000',
+  '10000000000000000000000000000',
+  '100000000000000000000000000000',
+  '1000000000000000000000000000000',
+  '10000000000000000000000000000000',
+  '100000000000000000000000000000000',
+  '1000000000000000000000000000000000',
+  '10000000000000000000000000000000000',
+  '100000000000000000000000000000000000',
+  '1000000000000000000000000000000000000',
+  '10000000000000000000000000000000000000',
+  '100000000000000000000000000000000000000',
+  '1000000000000000000000000000000000000000',
+];
+testNumbers.forEach((num) => {
+  console.log(`Formatted ${num}:`, formatBigNumber(num));
+});
