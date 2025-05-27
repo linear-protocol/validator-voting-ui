@@ -48,7 +48,7 @@ function toFraction(x: number): string {
 
 export default function Home() {
   const navigate = useNavigate();
-  const { ready, deadline, votes, votedPercent, voteFinishedAt, votedStakeAmount } =
+  const { isLoading, deadline, votes, votedPercent, voteFinishedAt, votedStakeAmount } =
     VoteContainer.useContainer();
 
   const [countdownSeconds, setCountdownSeconds] = useState<number | null>(null);
@@ -125,7 +125,7 @@ export default function Home() {
   };
 
   const renderContent = () => {
-    if (!ready) {
+    if (isLoading) {
       return (
         <div className="flex flex-col w-full items-center justify-center h-80">
           <PulseLoader />

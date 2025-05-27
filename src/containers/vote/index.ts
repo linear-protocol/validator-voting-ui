@@ -1,5 +1,6 @@
 import Big from 'big.js';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
+import useSWR from 'swr';
 
 import config from '@/config';
 import { createContainer } from '@/hooks/useContainer';
@@ -7,7 +8,7 @@ import useNear from '@/hooks/useNear';
 import { logger } from '@/lib/logger';
 
 interface VoteState {
-  ready: boolean;
+  isLoading: boolean;
   deadline: number | null;
   voteFinishedAt: number | null;
   votes: Record<string, string>;
@@ -25,7 +26,6 @@ const contractId = config.proposalContractId;
 function useVoteContainer(): UseVoteContainer {
   const { viewFunction } = useNear();
 
-  const [ready, setReady] = useState(false);
   const [deadline, setDeadline] = useState<number | null>(null);
   const [voteFinishedAt, setVoteFinishedAt] = useState<number | null>(null);
   const [votes, setVotes] = useState<Record<string, string>>({});
@@ -87,19 +87,13 @@ function useVoteContainer(): UseVoteContainer {
   //   logger.debug('get_proposal', data);
   // }, [viewFunction]);
 
-  useEffect(() => {
-    Promise.all([getTotalVotedStake(), getResult(), getVotes(), getDeadline()])
-      .then(() => {
-        setReady(true);
-      })
-      .catch((e) => {
-        logger.error('Failed to fetch data', e);
-        setReady(false);
-      });
-  }, [getTotalVotedStake, getResult, getVotes, getDeadline]);
+  const { isLoading } = useSWR('vote_data', async () => {
+    const promises = Promise.all([getTotalVotedStake(), getResult(), getVotes(), getDeadline()]);
+    return await promises;
+  });
 
   return {
-    ready,
+    isLoading,
     deadline,
     voteFinishedAt,
     votes,

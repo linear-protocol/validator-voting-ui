@@ -117,8 +117,6 @@ export default function Details() {
               const voteData = votes[item.accountId] || '0';
               const num = voteData ? formatBigNumber(voteData, 24) : '0';
               const percent = getPercent(voteData);
-              if (item.accountId === 'mock-validator-194.testnet')
-                console.log('voteData', item.accountId, voteData, num, percent);
               const relativeTime = dayjs(item.lastVoteTimestamp).fromNow();
 
               return (
