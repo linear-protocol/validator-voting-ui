@@ -87,10 +87,17 @@ function useVoteContainer(): UseVoteContainer {
   //   logger.debug('get_proposal', data);
   // }, [viewFunction]);
 
-  const { isLoading } = useSWR('vote_data', async () => {
-    const promises = Promise.all([getTotalVotedStake(), getResult(), getVotes(), getDeadline()]);
-    return await promises;
-  });
+  const { isLoading } = useSWR(
+    'vote_data',
+    async () => {
+      const promises = Promise.all([getTotalVotedStake(), getResult(), getVotes(), getDeadline()]);
+      return await promises;
+    },
+    {
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
+    },
+  );
 
   return {
     isLoading,

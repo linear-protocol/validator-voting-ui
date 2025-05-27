@@ -1,0 +1,19 @@
+.markdown-container {
+  blockquote {
+    padding-left: 1em;
+    border-left: 2px solid var(--color-app-black-400);
+    margin-bottom: 1em;
+    margin-top: 0.75em;
+  }
+  ul {
+    padding-left: 1.5em;
+    margin-bottom: 1em;
+  }
+  li {
+    list-style-type: disc;
+  }
+  a {
+    cursor: pointer;
+    color: #0052CC;
+  }
+}
