@@ -16,7 +16,35 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import VoteContainer from '@/containers/vote';
 import { cn, formatBigNumber } from '@/lib/utils';
 
-const PROGRESS = [41, 66.67];
+const PROGRESS = [66.67];
+
+function toFraction(x: number): string {
+  if (!x) return '2/3';
+  if (x > 1) x = x / 100;
+  try {
+    const tolerance = 0.01;
+    let h1 = 1,
+      h2 = 0,
+      k1 = 0,
+      k2 = 1,
+      b = x;
+    do {
+      const a = Math.floor(b);
+      let aux = h1;
+      h1 = a * h1 + h2;
+      h2 = aux;
+      aux = k1;
+      k1 = a * k1 + k2;
+      k2 = aux;
+      b = 1 / (b - a);
+    } while (Math.abs(x - h1 / k1) > x * tolerance);
+
+    return h1 + '/' + k1;
+  } catch (error) {
+    console.error('Error converting to fraction:', error);
+    return '2/3';
+  }
+}
 
 export default function Home() {
   const navigate = useNavigate();
@@ -143,9 +171,15 @@ export default function Home() {
               ></div>
             ))}
             <div
-              className="h-full bg-[hsla(158,100%,43%,1)] rounded-full"
-              style={{ width: `${votedPercent}%` }}
-            ></div>
+              className="h-full bg-[hsla(158,100%,43%,1)] rounded-full flex items-center justify-end overflow-hidden"
+              style={{ width: `${votedPercent}%`, minWidth: '60px' }}
+            >
+              {!!votedPercent && (
+                <div key={votedPercent} className="text-sm pr-1.5 text-white">
+                  {votedPercent}%
+                </div>
+              )}
+            </div>
           </div>
           <div className="flex items-center h-10 text-base justify-between relative">
             <div>0%</div>
@@ -154,6 +188,7 @@ export default function Home() {
                 {p}%
               </div>
             ))}
+
             <div>100%</div>
           </div>
         </div>
@@ -162,18 +197,19 @@ export default function Home() {
         {renderVoteProgressStatus()}
 
         <div className="flex items-center justify-center text-app-brown text-base sm:text-lg mb-5 gap-1 flex-wrap">
-          {Object.keys(votes).length} votes & {formatBigNumber(votedStakeAmount)} NEAR
-          <NEARLogo className="sm:h-4 sm:w-20 h-3 w-16" />
+          {Object.keys(votes).length} votes & {formatBigNumber(votedStakeAmount)}
+          <NEARLogo className="sm:h-4 sm:w-18 h-3 w-16" />
           <div className="flex items-center">
             Voting Power for YAE
-            {!showTooltip && (
+            {showTooltip && (
               <Popover>
                 <PopoverTrigger>
                   <CircleHelp className="ml-1 sm:ml-2 -mt-0.5 w-5 h-5 sm:w-6 sm:h-6" />
                 </PopoverTrigger>
                 <PopoverContent sideOffset={20}>
-                  The proposal will pass if the total voted stake keeps above 2/3 at the beginning
-                  of next epoch or a new vote comes in.
+                  The proposal will pass if the total voted stake keeps above{' '}
+                  {toFraction(Number(votedPercent))} at the beginning of next epoch or a new vote
+                  comes in.
                 </PopoverContent>
               </Popover>
             )}

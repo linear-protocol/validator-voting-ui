@@ -7,10 +7,12 @@ export default function Header() {
       <div className="flex items-center">
         <NEARLogo height={30} />
       </div>
-      <div className="flex items-center text-app-black-600 gap-3 text-base">
-        Powered by
-        <img src={LinearImg} className="h-6" />
-      </div>
+      <a href="https://app.linearprotocol.org/" target="_blank" rel="noopener noreferrer">
+        <div className="flex items-center text-app-black-600 gap-3 text-base">
+          Powered by
+          <img src={LinearImg} className="h-6" />
+        </div>
+      </a>
     </div>
   );
 }

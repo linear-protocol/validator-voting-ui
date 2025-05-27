@@ -9,7 +9,12 @@ import RightTopArrow from '@/assets/icons/right-top-arrow.svg?react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Skeleton } from '@/components/ui/skeleton';
 import {
-    Table, TableBody, TableCell, TableHead, TableHeader, TableRow
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
 } from '@/components/ui/table';
 import config from '@/config';
 import VoteContainer from '@/containers/vote';
@@ -32,12 +37,12 @@ export default function Details() {
     return Big(n).div(votedStakeAmount).times(100).toFixed(2);
   };
 
-  const getNearBlocksLink = (addr: string) => {
-    if (!addr) return '';
+  const getNearBlocksLink = (hash: string) => {
+    if (!hash) return '';
     if (config.near.network.networkId === 'testnet') {
-      return `https://testnet.nearblocks.io/address/${addr}`;
+      return `https://testnet.nearblocks.io/txns/${hash}`;
     }
-    return `https://nearblocks.io/address/${addr}`;
+    return `https://nearblocks.io/txns/${hash}`;
   };
 
   useEffect(() => {
@@ -80,7 +85,7 @@ export default function Details() {
           <TableBody>
             {list.map((item) => {
               const voteData = votes[item.accountId] || '0';
-              const num = voteData ? formatBigNumber(voteData, 18) : '0';
+              const num = voteData ? formatBigNumber(voteData, 24) : '0';
               const percent = getPercent(voteData);
               const relativeTime = dayjs(item.lastVoteTimestamp).fromNow();
 
@@ -97,9 +102,9 @@ export default function Details() {
                   </TableCell>
                   <TableCell className="h-[60px]">
                     <a
-                      href={getNearBlocksLink(item.accountId)}
+                      href={getNearBlocksLink(item.lastVoteReceiptHash)}
                       target="_blank"
-                      rel="noreferrer"
+                      rel="noopener noreferrer"
                       className="text-app-blue hover:underline flex items-center gap-1.5"
                     >
                       <GreenCheck className="-mt-1" />
