@@ -1,0 +1,4 @@
+.passed {
+  background: linear-gradient(90deg, hsla(169, 94%, 47%, 1), hsla(56, 97%, 48%, 1));
+  color: var(--color-app-black);
+}

@@ -4,6 +4,16 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
+  --color-app-black: hsla(0, 0%, 12%, 1);
+  --color-app-black-120: hsla(0, 0%, 0%, 0.12);
+  --color-app-black-400: hsla(0, 0%, 12%, 0.4);
+  --color-app-black-600: hsla(0, 0%, 12%, 0.6);
+  --color-app-black-800: hsla(0, 0%, 12%, 0.8);
+
+  --color-app-brown: hsla(44, 100%, 38%, 1);
+
+  --color-app-green: hsla(158, 94%, 47%, 1);
+
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
@@ -117,4 +127,9 @@
   body {
     @apply bg-background text-foreground;
   }
+}
+
+html, body, #root {
+  font-family: "fkg", sans-serif;
+  @apply text-app-black-800 text-base;
 }
