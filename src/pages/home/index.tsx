@@ -1,11 +1,9 @@
 import './index.css';
 
-import dayjs from 'dayjs';
 import { ArrowRight, CircleHelp } from 'lucide-react';
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { PulseLoader } from 'react-spinners';
-import { useInterval } from 'react-use';
 
 import NEARLogo from '@/assets/icons/near.svg?react';
 import ApprovedImg from '@/assets/images/approved.png';
@@ -17,6 +15,8 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import config from '@/config';
 import VoteContainer from '@/containers/vote';
 import { cn, formatBigNumber } from '@/lib/utils';
+
+import Countdown from './components/Countdown';
 
 const PROGRESS = [66.67];
 
@@ -53,8 +53,6 @@ export default function Home() {
   const { isLoading, deadline, votes, votedPercent, voteFinishedAt, votedStakeAmount } =
     VoteContainer.useContainer();
 
-  const [countdownSeconds, setCountdownSeconds] = useState<number | null>(null);
-
   const passed = useMemo(() => {
     return Number(votedPercent) >= PROGRESS[PROGRESS.length - 1];
   }, [votedPercent]);
@@ -64,59 +62,9 @@ export default function Home() {
     return passed;
   }, [voteFinishedAt, passed]);
 
-  const deadlineFromNow = useMemo(() => {
-    if (!countdownSeconds) return null;
-    const diffSeconds = countdownSeconds;
-    const diffMinutes = Math.floor(diffSeconds / 60);
-    const diffHours = Math.floor(diffMinutes / 60);
-    const diffDays = Math.floor(diffHours / 24);
-
-    const seconds = diffSeconds % 60;
-    const minutes = diffMinutes % 60;
-    const hours = diffHours % 24;
-    const days = diffDays;
-    return {
-      seconds: seconds.toString().padStart(2, '0'),
-      minutes: minutes.toString().padStart(2, '0'),
-      hours: hours.toString().padStart(2, '0'),
-      days: days.toString().padStart(2, '0'),
-    };
-  }, [countdownSeconds]);
-
   const renderVoteProgressStatus = () => {
     if (!voteFinishedAt) {
-      if (!deadlineFromNow) return null;
-      return (
-        <div className="flex flex-col items-center mb-10">
-          <h3 className="text-app-black-400 text-base sm:text-lg mb-4">VOTING PROGRESS</h3>
-          <div className="flex items-center gap-x-5 sm:gap-x-9">
-            <div className="flex flex-col items-center">
-              <div className="text-app-black text-4xl sm:text-[56px] font-bold">
-                {deadlineFromNow.days}
-              </div>
-              <div className="text-app-black-600 text-base sm:text-xl">Days</div>
-            </div>
-            <div className="flex flex-col items-center">
-              <div className="text-app-black text-4xl sm:text-[56px] font-bold">
-                {deadlineFromNow.hours}
-              </div>
-              <div className="text-app-black-600 text-base sm:text-xl">HRS</div>
-            </div>
-            <div className="flex flex-col items-center">
-              <div className="text-app-black text-4xl sm:text-[56px] font-bold">
-                {deadlineFromNow.minutes}
-              </div>
-              <div className="text-app-black-600 text-base sm:text-xl">MINS</div>
-            </div>
-            <div className="flex flex-col items-center">
-              <div className="text-app-black text-4xl sm:text-[56px] font-bold">
-                {deadlineFromNow.seconds}
-              </div>
-              <div className="text-app-black-600 text-base sm:text-xl">SECS</div>
-            </div>
-          </div>
-        </div>
-      );
+      return <Countdown deadline={deadline} />;
     }
 
     return (
@@ -234,23 +182,6 @@ export default function Home() {
       </>
     );
   };
-
-  useEffect(() => {
-    if (!deadline) return;
-    const now = dayjs();
-    const then = dayjs(deadline);
-    const diff = now.isBefore(then) ? then.diff(now) : now.diff(then);
-    const diffSeconds = Math.floor(diff / 1000);
-    setCountdownSeconds(diffSeconds);
-  }, [deadline]);
-
-  useInterval(
-    () => {
-      if (!deadline) return;
-      setCountdownSeconds((s) => (s ? s - 1 : s));
-    },
-    deadline ? 1000 : null,
-  );
 
   return (
     <div className="flex flex-col relative w-full min-h-screen pb-20 px-6 md:px-0">
