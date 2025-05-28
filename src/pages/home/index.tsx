@@ -116,12 +116,12 @@ export default function Home() {
             {PROGRESS.map((p) => (
               <div
                 key={p}
-                className="flex h-full w-0.5 bg-[hsla(0,0%,12%,0.08)] absolute"
+                className="flex h-full w-0.5 -translate-x-1/2 bg-[hsla(0,0%,12%,0.08)] absolute"
                 style={{ left: `${p}%` }}
               ></div>
             ))}
             <div
-              className="h-full bg-[hsla(158,100%,43%,1)] rounded-full flex items-center justify-end overflow-hidden"
+              className="h-full bg-[hsla(158,100%,43%,1)] rounded-full rounded-r-none flex items-center justify-end overflow-hidden"
               style={{ width: `${votedPercent}%`, minWidth: '60px' }}
             >
               {!!votedPercent && (

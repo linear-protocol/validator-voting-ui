@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 
 import GreenCheck from '@/assets/icons/green-check.svg?react';
 import RightTopArrow from '@/assets/icons/right-top-arrow.svg?react';
+import AvatarImg from '@/assets/images/avatar.jpg';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Skeleton } from '@/components/ui/skeleton';
 import {
@@ -25,24 +26,38 @@ export default function Details() {
 
   const [loading, setLoading] = useState(false);
   const [list, setList] = useState<ValidatorItem[]>([]);
-  const [powerOrder, setPowerOrder] = useState<'asc' | 'desc'>('asc');
+  const [powerOrder, setPowerOrder] = useState<'asc' | 'desc' | undefined>('asc');
+  const [dateOrder, setDateOrder] = useState<'asc' | 'desc' | undefined>();
 
   const tableList = useMemo(() => {
     if (!list || !list.length) return [];
-    if (powerOrder === 'desc') {
-      return list.sort((a, b) => {
-        const aVote = votes[a.accountId] || '0';
-        const bVote = votes[b.accountId] || '0';
-        return Big(aVote).minus(Big(bVote)).toNumber();
-      });
-    }
+    const _list = list.filter((item) => {
+      return votes[item.accountId] !== undefined;
+    });
 
-    return list.sort((a, b) => {
+    return _list.sort((a, b) => {
       const aVote = votes[a.accountId] || '0';
       const bVote = votes[b.accountId] || '0';
-      return Big(bVote).minus(Big(aVote)).toNumber();
+      const aDate = a.lastVoteTimestamp || 0;
+      const bDate = b.lastVoteTimestamp || 0;
+
+      if (powerOrder) {
+        if (powerOrder === 'desc') {
+          return Big(aVote).minus(Big(bVote)).toNumber();
+        }
+        return Big(bVote).minus(Big(aVote)).toNumber();
+      }
+
+      if (dateOrder) {
+        if (dateOrder === 'desc') {
+          return aDate > bDate ? -1 : 1;
+        }
+        return bDate > aDate ? -1 : 1;
+      }
+
+      return 1;
     });
-  }, [list, powerOrder, votes]);
+  }, [list, votes, powerOrder, dateOrder]);
 
   const getPercent = (n: string | number) => {
     if (!totalVotedStakeAmount || !n) return '0';
@@ -56,6 +71,15 @@ export default function Details() {
       return `https://testnet.nearblocks.io/hash/${hash}`;
     }
     return `https://nearblocks.io/hash/${hash}`;
+  };
+
+  const renderOrderIcon = (order: 'asc' | 'desc' | undefined) => {
+    if (order === 'asc') {
+      return <MoveDown className="h-4" />;
+    } else if (order === 'desc') {
+      return <MoveDown className="rotate-180 h-4" />;
+    }
+    return <MoveDown className="h-4 opacity-25" />;
   };
 
   useEffect(() => {
@@ -91,18 +115,28 @@ export default function Details() {
             <TableRow>
               <TableHead>Validator</TableHead>
               <TableHead>Choice</TableHead>
-              <TableHead>Date</TableHead>
+              <TableHead className="cursor-pointer">
+                <div
+                  className="flex items-center gap-0.5 min-w-[150px]"
+                  onClick={() => {
+                    setPowerOrder(undefined);
+                    setDateOrder(dateOrder === 'asc' ? 'desc' : 'asc');
+                  }}
+                >
+                  Date
+                  {renderOrderIcon(dateOrder)}
+                </div>
+              </TableHead>
               <TableHead className="text-right cursor-pointer">
                 <div
-                  className="flex items-center justify-end gap-0.5"
-                  onClick={() => setPowerOrder(powerOrder === 'asc' ? 'desc' : 'asc')}
+                  className="flex items-center justify-end gap-0.5 min-w-[150px]"
+                  onClick={() => {
+                    setDateOrder(undefined);
+                    setPowerOrder(powerOrder === 'asc' ? 'desc' : 'asc');
+                  }}
                 >
                   Voting Power
-                  {powerOrder === 'asc' ? (
-                    <MoveDown className="h-4" />
-                  ) : (
-                    <MoveDown className="rotate-180 h-4" />
-                  )}
+                  {renderOrderIcon(powerOrder)}
                 </div>
               </TableHead>
             </TableRow>
@@ -118,7 +152,10 @@ export default function Details() {
                 <TableRow key={item.id}>
                   <TableCell className="h-[60px] flex items-center gap-2">
                     <Avatar className="h-7 w-7">
-                      <AvatarImage src={item.metadata?.logo} alt={item.metadata?.name} />
+                      <AvatarImage
+                        src={item.metadata?.logo || AvatarImg}
+                        alt={item.metadata?.name}
+                      />
                       <AvatarFallback>
                         {item.metadata?.name || item.accountId.slice(0, 2)}
                       </AvatarFallback>
