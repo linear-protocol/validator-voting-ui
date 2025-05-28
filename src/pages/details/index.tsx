@@ -10,7 +10,12 @@ import AvatarImg from '@/assets/images/avatar.jpg';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Skeleton } from '@/components/ui/skeleton';
 import {
-    Table, TableBody, TableCell, TableHead, TableHeader, TableRow
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
 } from '@/components/ui/table';
 import config from '@/config';
 import VoteContainer from '@/containers/vote';
@@ -26,8 +31,8 @@ export default function Details() {
 
   const [loading, setLoading] = useState(false);
   const [list, setList] = useState<ValidatorItem[]>([]);
-  const [powerOrder, setPowerOrder] = useState<'asc' | 'desc' | undefined>('asc');
-  const [dateOrder, setDateOrder] = useState<'asc' | 'desc' | undefined>();
+  const [powerOrder, setPowerOrder] = useState<'asc' | 'desc' | undefined>();
+  const [dateOrder, setDateOrder] = useState<'asc' | 'desc' | undefined>('desc');
 
   const tableList = useMemo(() => {
     if (!list || !list.length) return [];
