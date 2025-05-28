@@ -79,9 +79,9 @@ export default function Details() {
   };
 
   const renderOrderIcon = (order: 'asc' | 'desc' | undefined) => {
-    if (order === 'asc') {
+    if (order === 'desc') {
       return <MoveDown className="h-4" />;
-    } else if (order === 'desc') {
+    } else if (order === 'asc') {
       return <MoveDown className="rotate-180 h-4" />;
     }
     return <MoveDown className="h-4 opacity-25" />;
