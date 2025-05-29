@@ -48,9 +48,9 @@ export default function Details() {
 
       if (powerOrder) {
         if (powerOrder === 'desc') {
-          return Big(aVote).minus(Big(bVote)).toNumber();
+          return Big(bVote).minus(Big(aVote)).toNumber();
         }
-        return Big(bVote).minus(Big(aVote)).toNumber();
+        return Big(aVote).minus(Big(bVote)).toNumber();
       }
 
       if (dateOrder) {
