@@ -76,8 +76,6 @@ export default function Home() {
 
   const renderProgress = () => {
     const _percent = Number(votedPercent);
-    const showInnerText = _percent > 0 && _percent >= 10;
-    const showLeftText = _percent > 0 && _percent < 10;
     return (
       <div className="relative w-full">
         <div className="flex items-center w-full h-6 bg-[hsla(0,0%,12%,0.08)] rounded-full overflow-hidden">
@@ -89,26 +87,22 @@ export default function Home() {
             ></div>
           ))}
           <div
-            className="h-full bg-[hsla(158,100%,43%,1)] rounded-full rounded-r-none flex items-center justify-end overflow-hidden"
-            style={{ width: `${_percent > 0.2 ? votedPercent : 0}%` }}
+            className="h-full bg-[hsla(158,100%,43%,1)] rounded-full rounded-r-none flex items-center"
+            style={{ width: `${votedPercent}%` }}
           >
-            {showInnerText && (
-              <div key={votedPercent} className="text-sm pr-1.5 text-white">
+            {!!votedPercent && (
+              <div
+                key={votedPercent}
+                className={cn('text-sm flex items-center h-full', {
+                  'justify-end pr-1.5 text-white w-full': _percent > 7,
+                  'text-app-black pl-1.5': _percent <= 7,
+                })}
+              >
                 {votedPercent}%
               </div>
             )}
           </div>
         </div>
-        {showLeftText && (
-          <div
-            className="text-sm absolute -top-6 left-2 text-app-black -translate-x-1/2"
-            style={{
-              left: `${votedPercent}%`,
-            }}
-          >
-            {votedPercent}%
-          </div>
-        )}
       </div>
     );
   };
