@@ -1,6 +1,6 @@
 import Big from 'big.js';
 import dayjs from 'dayjs';
-import { ArrowLeft, MoveDown } from 'lucide-react';
+import { ArrowLeft, MoveDown, Search } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -91,7 +91,7 @@ export default function Details() {
     setLoading(true);
     getValidators()
       .then((data) => {
-        setList(data);
+        setList(data || []);
       })
       .catch((error) => {
         console.error('Failed to fetch validators:', error);
@@ -199,6 +199,12 @@ export default function Details() {
             <Skeleton className="h-[24px]" />
             <Skeleton className="h-[24px]" />
             <Skeleton className="h-[24px]" />
+          </div>
+        )}
+        {!loading && tableList.length === 0 && (
+          <div className="flex flex-col items-center w-full text-base text-app-secondary pt-[300px]">
+            <Search className="mb-2" />
+            <p>No voter yet</p>
           </div>
         )}
       </div>
