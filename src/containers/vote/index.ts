@@ -18,7 +18,10 @@ interface VoteState {
 
 interface VoteComputed {
   votedPercent: string;
+  progressList: number[];
 }
+
+const PROGRESS = [66.67];
 
 type UseVoteContainer = VoteState & VoteComputed;
 const contractId = config.proposalContractId;
@@ -32,11 +35,21 @@ function useVoteContainer(): UseVoteContainer {
   const [votedStakeAmount, setVotedStakeAmount] = useState(Big(0));
   const [totalVotedStakeAmount, setTotalVotedStakeAmount] = useState(Big(0));
 
-  const votedPercent = useMemo(() => {
+  const _votedPercent = useMemo(() => {
     if (!totalVotedStakeAmount) return '0';
     if (totalVotedStakeAmount.eq(0)) return '0';
     return votedStakeAmount.div(totalVotedStakeAmount).times(100).toFixed(2) || '0';
   }, [votedStakeAmount, totalVotedStakeAmount]);
+
+  const votedPercent = useMemo(() => {
+    const _percent = Number(_votedPercent);
+    const lastProgress = PROGRESS[PROGRESS.length - 1];
+    if (voteFinishedAt) {
+      if (_percent >= lastProgress) return _votedPercent;
+      return lastProgress.toFixed(2);
+    }
+    return _votedPercent;
+  }, [_votedPercent, voteFinishedAt]);
 
   const getTotalVotedStake = useCallback(async () => {
     const data = await viewFunction({
@@ -107,6 +120,7 @@ function useVoteContainer(): UseVoteContainer {
     votedStakeAmount,
     totalVotedStakeAmount,
     votedPercent,
+    progressList: PROGRESS,
   };
 }
 
