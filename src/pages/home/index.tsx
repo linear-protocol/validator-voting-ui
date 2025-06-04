@@ -18,8 +18,6 @@ import { cn, formatBigNumber } from '@/lib/utils';
 
 import Countdown from './components/Countdown';
 
-const PROGRESS = [66.67];
-
 function toFraction(x: number): string {
   if (!x) return '2/3';
   if (x > 1) x = x / 100;
@@ -50,12 +48,19 @@ function toFraction(x: number): string {
 
 export default function Home() {
   const navigate = useNavigate();
-  const { isLoading, deadline, votes, votedPercent, voteFinishedAt, votedStakeAmount } =
-    VoteContainer.useContainer();
+  const {
+    isLoading,
+    deadline,
+    votes,
+    votedPercent,
+    progressList,
+    voteFinishedAt,
+    votedStakeAmount,
+  } = VoteContainer.useContainer();
 
   const passed = useMemo(() => {
-    return Number(votedPercent) >= PROGRESS[PROGRESS.length - 1];
-  }, [votedPercent]);
+    return Number(votedPercent) >= progressList[progressList.length - 1];
+  }, [votedPercent, progressList]);
 
   const showTooltip = useMemo(() => {
     if (voteFinishedAt) return false;
@@ -93,7 +98,7 @@ export default function Home() {
               { passed: passed },
             )}
             style={{
-              left: `${PROGRESS[PROGRESS.length - 1]}%`,
+              left: `${progressList[progressList.length - 1]}%`,
             }}
           >
             Pass
@@ -113,7 +118,7 @@ export default function Home() {
           </div>
 
           <div className="flex items-center w-full h-6 bg-[hsla(0,0%,12%,0.08)] rounded-full relative">
-            {PROGRESS.map((p) => (
+            {progressList.map((p) => (
               <div
                 key={p}
                 className="flex h-full w-0.5 bg-[hsla(0,0%,12%,0.08)] absolute"
@@ -133,7 +138,7 @@ export default function Home() {
           </div>
           <div className="flex items-center h-10 text-base justify-between relative">
             <div>0%</div>
-            {PROGRESS.map((p) => (
+            {progressList.map((p) => (
               <div key={p} className="absolute -translate-x-1/2" style={{ left: `${p}%` }}>
                 {p}%
               </div>
@@ -147,7 +152,7 @@ export default function Home() {
         {renderVoteProgressStatus()}
 
         <div className="flex items-center justify-center text-app-brown text-base sm:text-lg mb-5 gap-1 flex-wrap">
-          {Object.keys(votes).length} votes & {formatBigNumber(votedStakeAmount)}
+          {Object.keys(votes).length} Votes & {formatBigNumber(votedStakeAmount)}
           <NEARLogo className="sm:h-4 sm:w-18 h-3 w-16" />
           <div className="flex items-center">
             Voting Power for YAE
