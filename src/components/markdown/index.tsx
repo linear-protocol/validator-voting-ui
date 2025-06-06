@@ -1,12 +1,14 @@
 import './index.css';
 
-import { useMemo } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import ReactMarkdown from 'react-markdown';
 import { useCopyToClipboard } from 'react-use';
 import RehypeHighlight from 'rehype-highlight';
 import RehypeRaw from 'rehype-raw';
 import RemarkBreaks from 'remark-breaks';
 import RemarkGfm from 'remark-gfm';
+
+import { cn } from '@/lib/utils';
 
 export interface MarkdownProps {
   content: string;
@@ -42,9 +44,70 @@ function tryWrapHtmlCode(text: string) {
     );
 }
 
-export default function Markdown({ content }: MarkdownProps) {
+function CopyButton() {
   const [, copy] = useCopyToClipboard();
+  const [copied, setCopied] = useState(false);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const timerRef = useRef<any>(null);
 
+  return (
+    <div className="absolute hidden group-hover:flex top-3 right-2 bg-[rgb(41,45,62)]">
+      <button
+        type="button"
+        aria-label="Copy code to clipboard"
+        title="Copy"
+        className="flex items-center justify-center border border-[#dadde1] p-1.5 rounded transition-opacity ease-linear cursor-pointer"
+        onClick={(ev) => {
+          ev.stopPropagation();
+          try {
+            const target = ev.target as HTMLElement;
+            const block = target.closest('.markdown-code-block');
+            if (!block) return;
+            const code = block.querySelector('code');
+            if (!code) return;
+            const codeText = code.textContent || '';
+            if (!codeText) return;
+            copy(codeText);
+          } catch (error) {
+            console.error('Failed to copy code:', error);
+          }
+
+          setCopied(true);
+          timerRef.current = setTimeout(() => {
+            setCopied(false);
+            clearTimeout(timerRef.current);
+          }, 800);
+        }}
+      >
+        <span className="w-4.5 h-4.5 relative">
+          <svg
+            viewBox="0 0 24 24"
+            className={cn('absolute left-0 top-0 fill-[#dadde1]', {
+              'opacity-0': copied,
+              'opacity-100': !copied,
+            })}
+          >
+            <path
+              fill="#dadde1"
+              d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"
+            ></path>
+          </svg>
+          <svg
+            viewBox="0 0 24 24"
+            className={cn('absolute left-0 top-0 fill-[#05df72]', {
+              'opacity-0': !copied,
+              'opacity-100': copied,
+            })}
+          >
+            <path fill="#05df72" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path>
+          </svg>
+        </span>
+      </button>
+    </div>
+  );
+}
+
+export default function Markdown({ content }: MarkdownProps) {
   const escapedContent = useMemo(() => {
     return tryWrapHtmlCode(escapeBrackets(content));
   }, [content]);
@@ -71,28 +134,9 @@ export default function Markdown({ content }: MarkdownProps) {
                   overflowY: 'hidden',
                 }}
                 {...cProps}
+                className={cn(cProps.className, '!bg-[rgb(41,45,62)]')}
               />
-              <div
-                className="hidden group-hover:flex cursor-copy absolute top-2 right-2 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 px-2 py-1 rounded hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
-                onClick={(ev) => {
-                  ev.stopPropagation();
-                  if (!cProps.children) return;
-                  try {
-                    const target = ev.target as HTMLElement;
-                    const block = target.closest('.markdown-code-block');
-                    if (!block) return;
-                    const code = block.querySelector('code');
-                    if (!code) return;
-                    const codeText = code.textContent || '';
-                    if (!codeText) return;
-                    copy(codeText);
-                  } catch (error) {
-                    console.error('Failed to copy code:', error);
-                  }
-                }}
-              >
-                Copy
-              </div>
+              <CopyButton />
             </div>
           ),
           p: (pProps) => <p {...pProps} dir="auto" />,
