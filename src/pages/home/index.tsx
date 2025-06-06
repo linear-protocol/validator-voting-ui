@@ -219,9 +219,9 @@ export default function Home() {
           <Markdown
             content={`> NEAR's annual inflation target was set to 5% when mainnet was launched and has never been updated since then. The hope was that there would be sufficient transaction fees burnt to make the actual inflation in the range of 2-3%. However, over the past 12 months, only 1.58m NEAR are burnt in transaction fees, which is ~0.1% of the total supply. High inflation that compounds over the years leads to more than 60m NEAR a year being added to the total supply, which devalues the NEAR token gradually over time. In the past several months, multiple Proof-of-Stake blockchains have put forward proposals to reduce inflation:
 >
-> - [Polkadot](https://polkadot.polkassembly.io/referenda/1271)
-> - [Solana](https://github.com/solana-foundation/solana-improvement-documents/pull/228)
-> - [Aptos](https://github.com/aptos-foundation/AIPs/pull/586)
+> - <a href="https://polkadot.polkassembly.io/referenda/1271" target="_blank">Polkadot</a>
+> - <a href="https://github.com/solana-foundation/solana-improvement-documents/pull/228" target="_blank">Solana</a>
+> - <a href="https://github.com/aptos-foundation/AIPs/pull/586" target="_blank">Aptos</a>
 >
 > This proposal aims to reduce the overall inflation and change it to 2.5%.`}
           />
@@ -231,7 +231,7 @@ export default function Home() {
         <div className="flex flex-col w-full mt-2">
           <Markdown
             content={
-              'Vote with NEAR CLI\n' +
+              'Vote with <a href="https://docs.near.org/tools/near-cli/" target="_blank">NEAR CLI</a>\n' +
               '```bash\n' +
               `near call <validator-account-id> vote '{"voting_account_id":"${config.proposalContractId}","is_vote":true}' --accountId <validator-owner-id> --gas 200000000000000\n` +
               '```'
