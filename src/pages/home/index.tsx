@@ -79,6 +79,39 @@ export default function Home() {
     );
   };
 
+  const renderProgress = () => {
+    const _percent = Number(votedPercent);
+    return (
+      <div className="relative w-full">
+        <div className="flex items-center w-full h-6 bg-[hsla(0,0%,12%,0.08)] rounded-full overflow-hidden">
+          {progressList.map((p) => (
+            <div
+              key={p}
+              className="flex h-full w-0.5 -translate-x-1/2 bg-[hsla(0,0%,12%,0.08)] absolute"
+              style={{ left: `${p}%` }}
+            ></div>
+          ))}
+          <div
+            className="h-full bg-[hsla(158,100%,43%,1)] rounded-full rounded-r-none flex items-center"
+            style={{ width: `${votedPercent}%` }}
+          >
+            {!!votedPercent && (
+              <div
+                key={votedPercent}
+                className={cn('text-sm flex items-center h-full', {
+                  'justify-end pr-1.5 text-white w-full': _percent > 7,
+                  'text-app-black pl-1.5': _percent <= 7,
+                })}
+              >
+                {votedPercent}%
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    );
+  };
+
   const renderContent = () => {
     if (isLoading) {
       return (
@@ -117,25 +150,7 @@ export default function Home() {
             </svg>
           </div>
 
-          <div className="flex items-center w-full h-6 bg-[hsla(0,0%,12%,0.08)] rounded-full relative">
-            {progressList.map((p) => (
-              <div
-                key={p}
-                className="flex h-full w-0.5 bg-[hsla(0,0%,12%,0.08)] absolute"
-                style={{ left: `${p}%` }}
-              ></div>
-            ))}
-            <div
-              className="h-full bg-[hsla(158,100%,43%,1)] rounded-full flex items-center justify-end overflow-hidden"
-              style={{ width: `${votedPercent}%`, minWidth: '60px' }}
-            >
-              {!!votedPercent && (
-                <div key={votedPercent} className="text-sm pr-1.5 text-white">
-                  {votedPercent}%
-                </div>
-              )}
-            </div>
-          </div>
+          {renderProgress()}
           <div className="flex items-center h-10 text-base justify-between relative">
             <div>0%</div>
             {progressList.map((p) => (

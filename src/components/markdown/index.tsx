@@ -2,6 +2,7 @@ import './index.css';
 
 import { useMemo } from 'react';
 import ReactMarkdown from 'react-markdown';
+import { useCopyToClipboard } from 'react-use';
 import RehypeHighlight from 'rehype-highlight';
 import RehypeRaw from 'rehype-raw';
 import RemarkBreaks from 'remark-breaks';
@@ -42,6 +43,8 @@ function tryWrapHtmlCode(text: string) {
 }
 
 export default function Markdown({ content }: MarkdownProps) {
+  const [, copy] = useCopyToClipboard();
+
   const escapedContent = useMemo(() => {
     return tryWrapHtmlCode(escapeBrackets(content));
   }, [content]);
@@ -62,12 +65,35 @@ export default function Markdown({ content }: MarkdownProps) {
         ]}
         components={{
           code: (cProps) => (
-            <code
-              style={{
-                overflowY: 'hidden',
-              }}
-              {...cProps}
-            />
+            <div className="markdown-code-block relative group">
+              <code
+                style={{
+                  overflowY: 'hidden',
+                }}
+                {...cProps}
+              />
+              <div
+                className="hidden group-hover:flex cursor-copy absolute top-2 right-2 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 px-2 py-1 rounded hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
+                onClick={(ev) => {
+                  ev.stopPropagation();
+                  if (!cProps.children) return;
+                  try {
+                    const target = ev.target as HTMLElement;
+                    const block = target.closest('.markdown-code-block');
+                    if (!block) return;
+                    const code = block.querySelector('code');
+                    if (!code) return;
+                    const codeText = code.textContent || '';
+                    if (!codeText) return;
+                    copy(codeText);
+                  } catch (error) {
+                    console.error('Failed to copy code:', error);
+                  }
+                }}
+              >
+                Copy
+              </div>
+            </div>
           ),
           p: (pProps) => <p {...pProps} dir="auto" />,
         }}

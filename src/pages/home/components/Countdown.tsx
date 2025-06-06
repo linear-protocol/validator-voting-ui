@@ -7,6 +7,7 @@ export interface CountdownProps {
 }
 
 export default function Countdown({ deadline }: CountdownProps) {
+  const [isPageVisible, setPageVisibility] = useState(!document.hidden);
   const [countdownSeconds, setCountdownSeconds] = useState<number | null>(null);
 
   const deadlineFromNow = useMemo(() => {
@@ -35,7 +36,19 @@ export default function Countdown({ deadline }: CountdownProps) {
     const diff = now.isBefore(then) ? then.diff(now) : now.diff(then);
     const diffSeconds = Math.floor(diff / 1000);
     setCountdownSeconds(diffSeconds);
-  }, [deadline]);
+  }, [deadline, isPageVisible]);
+
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      setPageVisibility(!document.hidden);
+    };
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
+    return () => {
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+    };
+  }, []);
 
   useInterval(
     () => {

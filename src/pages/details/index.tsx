@@ -1,15 +1,21 @@
 import Big from 'big.js';
 import dayjs from 'dayjs';
-import { ArrowLeft, MoveDown } from 'lucide-react';
+import { ArrowLeft, MoveDown, Search } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import GreenCheck from '@/assets/icons/green-check.svg?react';
 import RightTopArrow from '@/assets/icons/right-top-arrow.svg?react';
+import AvatarImg from '@/assets/images/avatar.jpg';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Skeleton } from '@/components/ui/skeleton';
 import {
-    Table, TableBody, TableCell, TableHead, TableHeader, TableRow
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
 } from '@/components/ui/table';
 import config from '@/config';
 import VoteContainer from '@/containers/vote';
@@ -25,24 +31,38 @@ export default function Details() {
 
   const [loading, setLoading] = useState(false);
   const [list, setList] = useState<ValidatorItem[]>([]);
-  const [powerOrder, setPowerOrder] = useState<'asc' | 'desc'>('asc');
+  const [powerOrder, setPowerOrder] = useState<'asc' | 'desc' | undefined>();
+  const [dateOrder, setDateOrder] = useState<'asc' | 'desc' | undefined>('desc');
 
   const tableList = useMemo(() => {
     if (!list || !list.length) return [];
-    if (powerOrder === 'desc') {
-      return list.sort((a, b) => {
-        const aVote = votes[a.accountId] || '0';
-        const bVote = votes[b.accountId] || '0';
-        return Big(aVote).minus(Big(bVote)).toNumber();
-      });
-    }
+    const _list = list.filter((item) => {
+      return votes[item.accountId] !== undefined;
+    });
 
-    return list.sort((a, b) => {
+    return _list.sort((a, b) => {
       const aVote = votes[a.accountId] || '0';
       const bVote = votes[b.accountId] || '0';
-      return Big(bVote).minus(Big(aVote)).toNumber();
+      const aDate = a.lastVoteTimestamp || 0;
+      const bDate = b.lastVoteTimestamp || 0;
+
+      if (powerOrder) {
+        if (powerOrder === 'desc') {
+          return Big(bVote).minus(Big(aVote)).toNumber();
+        }
+        return Big(aVote).minus(Big(bVote)).toNumber();
+      }
+
+      if (dateOrder) {
+        if (dateOrder === 'desc') {
+          return aDate > bDate ? -1 : 1;
+        }
+        return bDate > aDate ? -1 : 1;
+      }
+
+      return 1;
     });
-  }, [list, powerOrder, votes]);
+  }, [list, votes, powerOrder, dateOrder]);
 
   const getPercent = (n: string | number) => {
     if (!totalVotedStakeAmount || !n) return '0';
@@ -58,11 +78,20 @@ export default function Details() {
     return `https://nearblocks.io/hash/${hash}`;
   };
 
+  const renderOrderIcon = (order: 'asc' | 'desc' | undefined) => {
+    if (order === 'desc') {
+      return <MoveDown className="h-4" />;
+    } else if (order === 'asc') {
+      return <MoveDown className="rotate-180 h-4" />;
+    }
+    return <MoveDown className="h-4 opacity-25" />;
+  };
+
   useEffect(() => {
     setLoading(true);
     getValidators()
       .then((data) => {
-        setList(data);
+        setList(data || []);
       })
       .catch((error) => {
         console.error('Failed to fetch validators:', error);
@@ -91,18 +120,28 @@ export default function Details() {
             <TableRow>
               <TableHead>Validator</TableHead>
               <TableHead>Choice</TableHead>
-              <TableHead>Date</TableHead>
+              <TableHead className="cursor-pointer">
+                <div
+                  className="flex items-center gap-0.5 min-w-[150px]"
+                  onClick={() => {
+                    setPowerOrder(undefined);
+                    setDateOrder(dateOrder === 'asc' ? 'desc' : 'asc');
+                  }}
+                >
+                  Date
+                  {renderOrderIcon(dateOrder)}
+                </div>
+              </TableHead>
               <TableHead className="text-right cursor-pointer">
                 <div
-                  className="flex items-center justify-end gap-0.5"
-                  onClick={() => setPowerOrder(powerOrder === 'asc' ? 'desc' : 'asc')}
+                  className="flex items-center justify-end gap-0.5 min-w-[150px]"
+                  onClick={() => {
+                    setDateOrder(undefined);
+                    setPowerOrder(powerOrder === 'asc' ? 'desc' : 'asc');
+                  }}
                 >
                   Voting Power
-                  {powerOrder === 'asc' ? (
-                    <MoveDown className="h-4" />
-                  ) : (
-                    <MoveDown className="rotate-180 h-4" />
-                  )}
+                  {renderOrderIcon(powerOrder)}
                 </div>
               </TableHead>
             </TableRow>
@@ -118,7 +157,10 @@ export default function Details() {
                 <TableRow key={item.id}>
                   <TableCell className="h-[60px] flex items-center gap-2">
                     <Avatar className="h-7 w-7">
-                      <AvatarImage src={item.metadata?.logo} alt={item.metadata?.name} />
+                      <AvatarImage
+                        src={item.metadata?.logo || AvatarImg}
+                        alt={item.metadata?.name}
+                      />
                       <AvatarFallback>
                         {item.metadata?.name || item.accountId.slice(0, 2)}
                       </AvatarFallback>
@@ -157,6 +199,12 @@ export default function Details() {
             <Skeleton className="h-[24px]" />
             <Skeleton className="h-[24px]" />
             <Skeleton className="h-[24px]" />
+          </div>
+        )}
+        {!loading && tableList.length === 0 && (
+          <div className="flex flex-col items-center w-full text-base text-app-secondary pt-[300px]">
+            <Search className="mb-2" />
+            <p>No voter yet</p>
           </div>
         )}
       </div>
