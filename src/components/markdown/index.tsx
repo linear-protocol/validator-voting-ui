@@ -134,7 +134,7 @@ export default function Markdown({ content }: MarkdownProps) {
                   overflowY: 'hidden',
                 }}
                 {...cProps}
-                className={cn(cProps.className, '!bg-[rgb(41,45,62)]')}
+                className={cn(cProps.className, '!bg-[rgb(41,45,62)] rounded-md')}
               />
               <CopyButton />
             </div>
