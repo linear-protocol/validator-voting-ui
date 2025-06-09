@@ -1,7 +1,11 @@
 import './index.css';
 
-import { ArrowRight, CircleHelp } from 'lucide-react';
 import { useMemo } from 'react';
+
+import {
+  ArrowRight,
+  CircleHelp,
+} from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { PulseLoader } from 'react-spinners';
 
@@ -11,10 +15,17 @@ import Bg1 from '@/assets/images/home-star-bg1.png';
 import Bg2 from '@/assets/images/home-star-bg2.png';
 import Markdown from '@/components/markdown';
 import { Button } from '@/components/ui/button';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover';
 import config from '@/config';
 import VoteContainer from '@/containers/vote';
-import { cn, formatBigNumber } from '@/lib/utils';
+import {
+  cn,
+  formatBigNumber,
+} from '@/lib/utils';
 
 import Countdown from './components/Countdown';
 
@@ -69,7 +80,7 @@ export default function Home() {
 
   const renderVoteProgressStatus = () => {
     if (!voteFinishedAt) {
-      return <Countdown deadline={deadline} />;
+      return <Countdown deadline={deadline} votedPercent={votedPercent} />;
     }
 
     return (

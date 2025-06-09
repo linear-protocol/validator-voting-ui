@@ -1,12 +1,18 @@
+import {
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
+
 import dayjs from 'dayjs';
-import { useEffect, useMemo, useState } from 'react';
 import { useInterval } from 'react-use';
 
 export interface CountdownProps {
+  votedPercent: string;
   deadline: number | null;
 }
 
-export default function Countdown({ deadline }: CountdownProps) {
+export default function Countdown({ votedPercent, deadline }: CountdownProps) {
   const [isPageVisible, setPageVisibility] = useState(!document.hidden);
   const [countdownSeconds, setCountdownSeconds] = useState<number | null>(null);
 
@@ -62,7 +68,9 @@ export default function Countdown({ deadline }: CountdownProps) {
 
   return (
     <div className="flex flex-col items-center mb-10">
-      <h3 className="text-app-black-400 text-base sm:text-lg mb-4">VOTING PROGRESS</h3>
+      <h3 className="text-app-black-400 text-base sm:text-lg mb-4">
+        {votedPercent}% of Stake Voted
+      </h3>
       <div className="flex items-center gap-x-5 sm:gap-x-9">
         <div className="flex flex-col items-center">
           <div className="text-app-black text-4xl sm:text-[56px] font-bold">
