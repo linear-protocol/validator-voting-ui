@@ -225,7 +225,7 @@ export default function Home() {
         <div className="flex flex-col w-full mt-2">
           <Markdown
             content={
-              'Vote with <a href="https://docs.near.org/tools/near-cli/" target="_blank">NEAR CLI</a>\n' +
+              '<b>Vote with <a href="https://docs.near.org/tools/near-cli/" target="_blank">NEAR CLI</a></b>\n' +
               '```bash\n' +
               `near call <validator-account-id> vote '{"voting_account_id":"${config.proposalContractId}","is_vote":true}' --accountId <validator-owner-id> --gas 200000000000000\n` +
               '```'
