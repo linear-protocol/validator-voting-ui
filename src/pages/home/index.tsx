@@ -2,10 +2,7 @@ import './index.css';
 
 import { useMemo } from 'react';
 
-import {
-  ArrowRight,
-  CircleHelp,
-} from 'lucide-react';
+import { ArrowRight, CircleHelp } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { PulseLoader } from 'react-spinners';
 
@@ -15,17 +12,11 @@ import Bg1 from '@/assets/images/home-star-bg1.png';
 import Bg2 from '@/assets/images/home-star-bg2.png';
 import Markdown from '@/components/markdown';
 import { Button } from '@/components/ui/button';
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/components/ui/popover';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import config from '@/config';
 import VoteContainer from '@/containers/vote';
-import {
-  cn,
-  formatBigNumber,
-} from '@/lib/utils';
+import { cn, formatBigNumber } from '@/lib/utils';
+import { article } from './article';
 
 import Countdown from './components/Countdown';
 
@@ -227,15 +218,7 @@ export default function Home() {
 
         {/* article */}
         <div className="flex flex-col w-full mb-4">
-          <Markdown
-            content={`> NEAR's annual inflation target was set to 5% when mainnet was launched and has never been updated since then. The hope was that there would be sufficient transaction fees burnt to make the actual inflation in the range of 2-3%. However, over the past 12 months, only 1.58m NEAR are burnt in transaction fees, which is ~0.1% of the total supply. High inflation that compounds over the years leads to more than 60m NEAR a year being added to the total supply, which devalues the NEAR token gradually over time. In the past several months, multiple Proof-of-Stake blockchains have put forward proposals to reduce inflation:
->
-> - <a href="https://polkadot.polkassembly.io/referenda/1271" target="_blank">Polkadot</a>
-> - <a href="https://github.com/solana-foundation/solana-improvement-documents/pull/228" target="_blank">Solana</a>
-> - <a href="https://github.com/aptos-foundation/AIPs/pull/586" target="_blank">Aptos</a>
->
-> This proposal aims to reduce the overall inflation and change it to 2.5%.`}
-          />
+          <Markdown content={article} />
         </div>
 
         {/* command */}
