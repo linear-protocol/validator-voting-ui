@@ -213,10 +213,10 @@ export default function Home() {
         <h1 className="text-[28px] sm:text-[40px] font-semibold py-8 sm:py-10 mb-10 text-app-black">
           Reduce NEAR's Inflation
         </h1>
-
         {renderContent()}
-
-        {/* article */}
+      </div>
+      <div className="md:max-w-4/5 w-full mx-auto flex flex-col items-center bg-white z-[2] flex-1">
+         {/* article */}
         <div className="flex flex-col w-full mb-4">
           <Markdown content={article} />
         </div>
