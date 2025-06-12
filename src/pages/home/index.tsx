@@ -126,7 +126,7 @@ export default function Home() {
     return (
       <>
         {/* progress bar */}
-        <div className="flex flex-col w-full relative mb-10">
+        <div className="flex flex-col w-full relative mb-5">
           <div
             className={cn(
               'absolute flex items-center justify-center text-white w-[68px] h-[32px] -top-11 font-semibold bg-app-black rounded-full -translate-x-1/2',
@@ -216,19 +216,24 @@ export default function Home() {
         {renderContent()}
       </div>
       <div className="md:max-w-4/5 w-full mx-auto flex flex-col items-center bg-white z-[2] flex-1">
-         {/* article */}
-        <div className="flex flex-col w-full mb-4">
+        {/* article */}
+        <div className="flex flex-col w-full">
           <Markdown content={article} />
         </div>
 
         {/* command */}
-        <div className="flex flex-col w-full mt-2">
+        <div className="flex flex-col w-full">
           <Markdown
             content={
-              '<b>Vote with <a href="https://docs.near.org/tools/near-cli/" target="_blank">NEAR CLI</a></b>\n' +
+              '## Vote with <a href="https://docs.near.org/tools/near-cli/" target="_blank">NEAR CLI</a>\n' +
+              '\n' +
+              "If you're a validator, please vote with the below command if you support this proposal. Replace <validator-account-id> and <validator-owner-id> in the command with your own account IDs." +
+              '\n' +
               '```bash\n' +
-              `near call <validator-account-id> vote '{"voting_account_id":"${config.proposalContractId}","is_vote":true}' --accountId <validator-owner-id> --gas 200000000000000\n` +
-              '```'
+              `NEAR_ENV=mainnet near call <validator-account-id> vote '{"voting_account_id":"${config.proposalContractId}","is_vote":true}' --accountId <validator-owner-id> --gas 200000000000000\n` +
+              '```\n' +
+              '\n' +
+              'To read more about the proposal and join the discussion, please visit the <a href="https://gov.near.org" target="_blank">post</a>.'
             }
           />
         </div>
