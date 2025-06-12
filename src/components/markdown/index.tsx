@@ -51,7 +51,7 @@ function CopyButton() {
   const timerRef = useRef<any>(null);
 
   return (
-    <div className="absolute hidden group-hover:flex top-3 right-2 bg-[rgb(41,45,62)]">
+    <div className="absolute flex md:hidden group-hover:flex top-3 right-2 bg-[rgb(41,45,62)]">
       <button
         type="button"
         aria-label="Copy code to clipboard"
