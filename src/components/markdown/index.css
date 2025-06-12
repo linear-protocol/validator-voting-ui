@@ -1,22 +1,52 @@
 .markdown-container {
-  blockquote {
-    padding-left: 1em;
-    border-left: 2px solid var(--color-app-black-400);
-    margin-bottom: 1em;
-    margin-top: 0.75em;
+  color: var(--color-app-black-800);
+
+  h1, h2, h3, h4, h5, h6 {
+      margin: 1.3em 0;
+      font-weight: 600;
   }
-  ul {
-    padding-left: 1.5em;
-    margin: 0.5em 0;
+
+  h1 {
+      font-size: 2em;
+  }
+
+  h2 {
+      font-size: 1.5em;
+  }
+
+  h3 {
+      font-size: 1.3em;
+  }
+
+  h4, h5, h6 {
+      font-size: 1.1em;
+  }
+
+  p {
+      margin: 1em 0;
+  }
+
+  a {
+      color: #0645AD;
+      text-decoration: none;
+  }
+
+  a:hover {
+      text-decoration: underline;
+  }
+
+  ul, ol {
+      padding-left: 2em;
+      margin: 1em 0;
   }
   li {
     list-style-type: disc;
+    margin: 1em 0;
   }
-  a {
-    cursor: pointer;
-    color: #0052CC;
-  }
-  p {
-    margin: 0.5em 0;
+
+  blockquote {
+    padding-left: 1em;
+    color: #555;
+    border-left: 4px solid var(--color-app-black-400);
   }
 }

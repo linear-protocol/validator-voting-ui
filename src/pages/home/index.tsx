@@ -2,10 +2,7 @@ import './index.css';
 
 import { useMemo } from 'react';
 
-import {
-  ArrowRight,
-  CircleHelp,
-} from 'lucide-react';
+import { ArrowRight, CircleHelp } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { PulseLoader } from 'react-spinners';
 
@@ -15,17 +12,11 @@ import Bg1 from '@/assets/images/home-star-bg1.png';
 import Bg2 from '@/assets/images/home-star-bg2.png';
 import Markdown from '@/components/markdown';
 import { Button } from '@/components/ui/button';
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/components/ui/popover';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import config from '@/config';
 import VoteContainer from '@/containers/vote';
-import {
-  cn,
-  formatBigNumber,
-} from '@/lib/utils';
+import { cn, formatBigNumber } from '@/lib/utils';
+import { article } from './article';
 
 import Countdown from './components/Countdown';
 
@@ -222,27 +213,19 @@ export default function Home() {
         <h1 className="text-[28px] sm:text-[40px] font-semibold py-8 sm:py-10 mb-10 text-app-black">
           Reduce NEAR's Inflation
         </h1>
-
         {renderContent()}
-
-        {/* article */}
+      </div>
+      <div className="md:max-w-4/5 w-full mx-auto flex flex-col items-center bg-white z-[2] flex-1">
+         {/* article */}
         <div className="flex flex-col w-full mb-4">
-          <Markdown
-            content={`> NEAR's annual inflation target was set to 5% when mainnet was launched and has never been updated since then. The hope was that there would be sufficient transaction fees burnt to make the actual inflation in the range of 2-3%. However, over the past 12 months, only 1.58m NEAR are burnt in transaction fees, which is ~0.1% of the total supply. High inflation that compounds over the years leads to more than 60m NEAR a year being added to the total supply, which devalues the NEAR token gradually over time. In the past several months, multiple Proof-of-Stake blockchains have put forward proposals to reduce inflation:
->
-> - <a href="https://polkadot.polkassembly.io/referenda/1271" target="_blank">Polkadot</a>
-> - <a href="https://github.com/solana-foundation/solana-improvement-documents/pull/228" target="_blank">Solana</a>
-> - <a href="https://github.com/aptos-foundation/AIPs/pull/586" target="_blank">Aptos</a>
->
-> This proposal aims to reduce the overall inflation and change it to 2.5%.`}
-          />
+          <Markdown content={article} />
         </div>
 
         {/* command */}
         <div className="flex flex-col w-full mt-2">
           <Markdown
             content={
-              'Vote with <a href="https://docs.near.org/tools/near-cli/" target="_blank">NEAR CLI</a>\n' +
+              '<b>Vote with <a href="https://docs.near.org/tools/near-cli/" target="_blank">NEAR CLI</a></b>\n' +
               '```bash\n' +
               `near call <validator-account-id> vote '{"voting_account_id":"${config.proposalContractId}","is_vote":true}' --accountId <validator-owner-id> --gas 200000000000000\n` +
               '```'
