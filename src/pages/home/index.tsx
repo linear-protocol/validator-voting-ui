@@ -76,6 +76,9 @@ export default function Home() {
 
     return (
       <div className="flex flex-col items-center mb-10">
+        <h3 className="text-app-black-400 text-base sm:text-lg mb-4">
+          {votedPercent}% of Stake Voted
+        </h3>
         <img src={ApprovedImg} className="h-[72px]" alt="" />
       </div>
     );
