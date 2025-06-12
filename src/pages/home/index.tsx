@@ -230,7 +230,8 @@ export default function Home() {
             content={
               '## Vote with <a href="https://docs.near.org/tools/near-cli/" target="_blank">NEAR CLI</a>\n' +
               '\n' +
-              "If you're a validator, please vote with the below command if you support this proposal. Replace <validator-account-id> and <validator-owner-id> in the command with your own account IDs." +
+              "If you're a validator, please vote with the below command if you support this proposal. " +
+              'Replace &lt;validator-account-id&gt; and &lt;validator-owner-id&gt; in the command with your own account IDs.' +
               '\n' +
               '```bash\n' +
               `NEAR_ENV=mainnet near call <validator-account-id> vote '{"voting_account_id":"${config.proposalContractId}","is_vote":true}' --accountId <validator-owner-id> --gas 200000000000000\n` +
