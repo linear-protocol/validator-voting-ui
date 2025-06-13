@@ -60,6 +60,8 @@ export default function Home() {
     votedStakeAmount,
   } = VoteContainer.useContainer();
 
+  const NEAR_ENV = config.proposalContractId?.split('.').pop() === 'near' ? 'mainnet' : 'testnet';
+
   const passed = useMemo(() => {
     return Number(votedPercent) >= progressList[progressList.length - 1];
   }, [votedPercent, progressList]);
@@ -76,6 +78,9 @@ export default function Home() {
 
     return (
       <div className="flex flex-col items-center mb-10">
+        <h3 className="text-app-black-400 text-base sm:text-lg mb-4">
+          {votedPercent}% of Stake Voted
+        </h3>
         <img src={ApprovedImg} className="h-[72px]" alt="" />
       </div>
     );
@@ -126,7 +131,7 @@ export default function Home() {
     return (
       <>
         {/* progress bar */}
-        <div className="flex flex-col w-full relative mb-10">
+        <div className="flex flex-col w-full relative mb-5">
           <div
             className={cn(
               'absolute flex items-center justify-center text-white w-[68px] h-[32px] -top-11 font-semibold bg-app-black rounded-full -translate-x-1/2',
@@ -209,26 +214,30 @@ export default function Home() {
     <div className="flex flex-col relative w-full min-h-screen pb-20 px-6 md:px-0">
       <img src={Bg1} alt="" className="absolute left-0 top-0 hidden md:flex" width={280} />
       <img src={Bg2} alt="" className="absolute right-0 top-0 hidden md:flex" width={280} />
-      <div className="md:w-[654px] w-full mx-auto flex flex-col items-center bg-white z-[2] flex-1">
-        <h1 className="text-[28px] sm:text-[40px] font-semibold py-8 sm:py-10 mb-10 text-app-black">
-          Reduce NEAR's Inflation
+      <div className="md:w-[700px] w-full mx-auto flex flex-col items-center bg-white z-[2] flex-1">
+        <h1 className="text-[28px] sm:text-[38px] font-semibold text-center py-8 sm:py-10 mb-10 text-app-black">
+          Reduce Inflation for NEAR Protocol
         </h1>
         {renderContent()}
       </div>
       <div className="md:max-w-4/5 w-full mx-auto flex flex-col items-center bg-white z-[2] flex-1">
-         {/* article */}
-        <div className="flex flex-col w-full mb-4">
+        {/* article */}
+        <div className="flex flex-col w-full">
           <Markdown content={article} />
         </div>
 
         {/* command */}
-        <div className="flex flex-col w-full mt-2">
+        <div className="flex flex-col w-full">
           <Markdown
             content={
-              '<b>Vote with <a href="https://docs.near.org/tools/near-cli/" target="_blank">NEAR CLI</a></b>\n' +
+              '## Vote with <a href="https://docs.near.org/tools/near-cli/" target="_blank">NEAR CLI</a>\n' +
+              '\n' +
+              "If you're a validator, please vote with the below command if you support this proposal. " +
+              'Replace &lt;validator-account-id&gt; and &lt;validator-owner-id&gt; in the command with your own account IDs.' +
+              '\n' +
               '```bash\n' +
-              `near call <validator-account-id> vote '{"voting_account_id":"${config.proposalContractId}","is_vote":true}' --accountId <validator-owner-id> --gas 200000000000000\n` +
-              '```'
+              `NEAR_ENV=${NEAR_ENV} near call <validator-account-id> vote '{"voting_account_id":"${config.proposalContractId}","is_vote":true}' --accountId <validator-owner-id> --gas 200000000000000\n` +
+              '```\n'
             }
           />
         </div>

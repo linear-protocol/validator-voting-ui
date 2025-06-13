@@ -1,3 +1,8 @@
-import testnetConfig from './testnet';
+import testnet from './testnet';
+import mainnet from './mainnet';
 
-export default testnetConfig;
+export const nearEnv = import.meta.env.VITE_APP_NEAR_ENV;
+export default {
+  testnet,
+  mainnet,
+}[nearEnv] || testnet;
