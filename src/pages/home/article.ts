@@ -1,5 +1,5 @@
 export const article = `
-# Reduce Inflation for NEAR Protocol
+# Proposal: Dynamic Inflation Model for NEAR Protocol
 
 ## Context: NEAR’s Current Inflation and Drawbacks
 

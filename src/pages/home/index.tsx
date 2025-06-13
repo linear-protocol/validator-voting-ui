@@ -13,7 +13,7 @@ import Bg2 from '@/assets/images/home-star-bg2.png';
 import Markdown from '@/components/markdown';
 import { Button } from '@/components/ui/button';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import config from '@/config';
+import config, { nearEnv } from '@/config';
 import VoteContainer from '@/containers/vote';
 import { cn, formatBigNumber } from '@/lib/utils';
 import { article } from './article';
@@ -212,9 +212,9 @@ export default function Home() {
     <div className="flex flex-col relative w-full min-h-screen pb-20 px-6 md:px-0">
       <img src={Bg1} alt="" className="absolute left-0 top-0 hidden md:flex" width={280} />
       <img src={Bg2} alt="" className="absolute right-0 top-0 hidden md:flex" width={280} />
-      <div className="md:w-[654px] w-full mx-auto flex flex-col items-center bg-white z-[2] flex-1">
-        <h1 className="text-[28px] sm:text-[40px] font-semibold py-8 sm:py-10 mb-10 text-app-black">
-          Reduce NEAR's Inflation
+      <div className="md:w-[700px] w-full mx-auto flex flex-col items-center bg-white z-[2] flex-1">
+        <h1 className="text-[28px] sm:text-[38px] font-semibold text-center py-8 sm:py-10 mb-10 text-app-black">
+          Reduce Inflation for NEAR Protocol
         </h1>
         {renderContent()}
       </div>
@@ -234,7 +234,7 @@ export default function Home() {
               'Replace &lt;validator-account-id&gt; and &lt;validator-owner-id&gt; in the command with your own account IDs.' +
               '\n' +
               '```bash\n' +
-              `NEAR_ENV=mainnet near call <validator-account-id> vote '{"voting_account_id":"${config.proposalContractId}","is_vote":true}' --accountId <validator-owner-id> --gas 200000000000000\n` +
+              `NEAR_ENV=${nearEnv} near call <validator-account-id> vote '{"voting_account_id":"${config.proposalContractId}","is_vote":true}' --accountId <validator-owner-id> --gas 200000000000000\n` +
               '```\n' +
               '\n' +
               'To read more about the proposal and join the discussion, please visit the <a href="https://gov.near.org" target="_blank">post</a>.'
