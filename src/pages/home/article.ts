@@ -50,4 +50,6 @@ Such a change puts NEAR in line with other leading blockchains that are optimizi
 With consensus, we aim to move to the formal validator vote soon. **Let’s work together to implement this improvement to NEAR’s economics, strengthening the network’s viability and competitiveness for years to come.**
 
 *Thank you for your consideration, and we look forward to your input on this proposal.*
+
+To read more about the proposal and join the discussion, please visit the <a href="https://gov.near.org" target="_blank">post</a>.
 `;

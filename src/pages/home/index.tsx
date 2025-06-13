@@ -234,10 +234,8 @@ export default function Home() {
               'Replace &lt;validator-account-id&gt; and &lt;validator-owner-id&gt; in the command with your own account IDs.' +
               '\n' +
               '```bash\n' +
-              `NEAR_ENV=${nearEnv} near call <validator-account-id> vote '{"voting_account_id":"${config.proposalContractId}","is_vote":true}' --accountId <validator-owner-id> --gas 200000000000000\n` +
-              '```\n' +
-              '\n' +
-              'To read more about the proposal and join the discussion, please visit the <a href="https://gov.near.org" target="_blank">post</a>.'
+              `NEAR_ENV=mainnet near call <validator-account-id> vote '{"voting_account_id":"${config.proposalContractId}","is_vote":true}' --accountId <validator-owner-id> --gas 200000000000000\n` +
+              '```\n'
             }
           />
         </div>
