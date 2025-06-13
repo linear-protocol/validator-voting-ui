@@ -13,7 +13,7 @@ import Bg2 from '@/assets/images/home-star-bg2.png';
 import Markdown from '@/components/markdown';
 import { Button } from '@/components/ui/button';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import config, { nearEnv } from '@/config';
+import config from '@/config';
 import VoteContainer from '@/containers/vote';
 import { cn, formatBigNumber } from '@/lib/utils';
 import { article } from './article';
