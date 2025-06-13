@@ -60,7 +60,8 @@ export default function Home() {
     votedStakeAmount,
   } = VoteContainer.useContainer();
 
-  const NEAR_ENV = config.proposalContractId?.split('.').pop();;
+  const NEAR_ENV = config.proposalContractId?.split('.').pop() === 'near' ? 'mainnet' : 'testnet';
+
   const passed = useMemo(() => {
     return Number(votedPercent) >= progressList[progressList.length - 1];
   }, [votedPercent, progressList]);
