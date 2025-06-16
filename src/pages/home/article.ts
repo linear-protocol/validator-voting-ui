@@ -8,7 +8,7 @@ The current **5% fixed inflation** is **too high relative to usage**, causing un
 
 ## Proposed Inflation Change
 
-**Proposal Summary:** *Change NEAR’s maximum inflation from 5% to 2.5%*
+**Proposal Summary: <a href="https://gov.near.org" target="_blank">*Change NEAR’s maximum inflation from 5% to 2.5%*</a>**
 
 **Rationale:** With \~0.1% of total supply burnt in transaction fees every year, 2.5% maximum inflation would result in an actual inflation of 2.4%, which is much healthier than the 4.9% we have today and make the economics of the protocol more sustainable. In addition, the current \~9% staking yield makes it unattractive for token holders to use NEAR Defi.
 
