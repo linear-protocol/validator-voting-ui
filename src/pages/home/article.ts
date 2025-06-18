@@ -2,7 +2,7 @@
 export const article = `
 ## **Context: NEAR’s Current Inflation Rate and Drawbacks**
 
-NEAR’s token economics currently relies on a fixed 5% annual inflation rate on the total token supply. This rate was set at mainnet launch with the expectation that high network usage (and fee burns) would bring net inflation down to ~2-3%. In reality, there has been minimal burning of fees (only \~0.1% of supply burned over the past year), so almost the entire 5% inflation is being added to the token supply. This translates to over 60 million new NEAR tokens minted each year, significantly increasing the number of tokens in circulation. This fixed 5% inflation also exacerbates over the years as it compounds. This excessive inflation dilutes existing holders and gradually devalues the NEAR token price.
+NEAR’s token economics currently relies on a fixed 5% annual inflation rate on the total token supply. This rate was set at mainnet launch with the expectation that high network usage (and fee burns) would bring net inflation down to 2-3%. In reality, there has been minimal burning of fees (only \~0.1% of supply burned over the past year), so almost the entire 5% inflation is being added to the token supply. This translates to over 60 million new NEAR tokens minted each year, significantly increasing the number of tokens in circulation. This fixed 5% inflation also exacerbates over the years as it compounds. This excessive inflation dilutes existing holders and gradually devalues the NEAR token price.
 
 The NEAR community needs a more sustainable inflation model that reduces inflation,  while still rewarding stakers and securing the network.
 
