@@ -216,7 +216,7 @@ export default function Home() {
       <img src={Bg2} alt="" className="absolute right-0 top-0 hidden md:flex" width={280} />
       <div className="md:w-[700px] w-full mx-auto flex flex-col items-center bg-white z-[2] flex-1">
         <h1 className="text-[28px] sm:text-[38px] font-semibold text-center py-8 sm:py-10 mb-10 text-app-black">
-          Reduce Inflation for NEAR Protocol
+          Improve NEAR Token Economy with Reduced Inflation
         </h1>
         {renderContent()}
       </div>
