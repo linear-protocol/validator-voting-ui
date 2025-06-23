@@ -28,6 +28,7 @@ export interface ValidatorItem {
   choice: 'yes' | 'no';
   lastVoteTimestamp: string;
   lastVoteReceiptHash: string;
+  totalStakedBalance: string;
   metadata?: ValidatorMetadata;
 }
 
