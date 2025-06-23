@@ -1,4 +1,5 @@
 import Big from 'big.js';
+import type { BigSource, RoundingMode } from 'big.js';
 import { clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 
@@ -13,7 +14,7 @@ export function formatBigNumber(num: Big.Big | string | number, decimals = 24): 
   const _num = Big(num);
   if (_num.eq(0)) return '0.00';
   const bigNum = Big(_num).div(Big(10).pow(decimals));
-  const numStr = bigNum.toFixed();
+  const numStr = bigNum.toFixed().split('.')[0]; // Get the integer part as a string
   const len = numStr.replace(/\D/g, '').length;
 
   let unit = '';
@@ -34,7 +35,30 @@ export function formatBigNumber(num: Big.Big | string | number, decimals = 24): 
   }
 
   if (result.lt(1)) {
-    return bigNum.toFixed(2);
+    return toLocaleString(bigNum, 2);
   }
-  return result.toFixed(2) + unit;
+  return toLocaleString(result, 2) + unit;
+}
+
+export default function toLocaleString(
+  source: BigSource,
+  decimals?: number,
+  dp?: RoundingMode, // only for Big type
+): string {
+  if (typeof source === 'string') {
+    return toLocaleString(Number(source), decimals);
+  } else if (typeof source === 'number') {
+    return decimals !== undefined
+      ? source.toLocaleString(undefined, {
+          maximumFractionDigits: decimals,
+          minimumFractionDigits: decimals,
+        })
+      : source.toLocaleString();
+  } else {
+    // Big type
+    return toLocaleString(
+      decimals !== undefined ? Number(source.toFixed(decimals, dp)) : source.toNumber(),
+      decimals,
+    );
+  }
 }

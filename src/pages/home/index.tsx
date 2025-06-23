@@ -6,7 +6,7 @@ import { ArrowRight, CircleHelp } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { PulseLoader } from 'react-spinners';
 
-import NEARLogo from '@/assets/icons/near.svg?react';
+import NEARLogo from '@/assets/images/near-green.jpg';
 import ApprovedImg from '@/assets/images/approved.png';
 import Bg1 from '@/assets/images/home-star-bg1.png';
 import Bg2 from '@/assets/images/home-star-bg2.png';
@@ -175,7 +175,7 @@ export default function Home() {
 
         <div className="flex items-center justify-center text-app-brown text-base sm:text-lg mb-5 gap-1 flex-wrap">
           {Object.keys(votes).length} Votes & {formatBigNumber(votedStakeAmount)}
-          <NEARLogo className="sm:h-4 sm:w-18 h-3 w-16" />
+          <img src={NEARLogo} alt="near" className="flex h-5.5 -mt-0.5 rounded mx-0.5" />
           <div className="flex items-center">
             Voting Power for YAE
             {showTooltip && (

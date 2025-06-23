@@ -25,9 +25,10 @@ export interface ValidatorMetadata {
 export interface ValidatorItem {
   id: string;
   accountId: string;
-  isVoted: boolean;
+  choice: 'yes' | 'no';
   lastVoteTimestamp: string;
   lastVoteReceiptHash: string;
+  totalStakedBalance: string;
   metadata?: ValidatorMetadata;
 }
 
