@@ -231,12 +231,21 @@ export default function Home() {
           <Markdown
             content={
               '## Vote with <a href="https://docs.near.org/tools/near-cli/" target="_blank">NEAR CLI</a>\n' +
+              'Instructions for Validator Voting:\n' +
+              '- If you are a validator, please use the CLI commands shown below to vote. We do not support voting through wallet for security considerations. This page is only used to display voting results.\n' +
+              '- You can vote **yes** or **no** for the proposal. You can change your vote before the voting ends.\n' +
+              '- This voting ends when **2/3 of stake votes yes** or when **the deadline passes**.\n' +
+              '- Replace **&lt;validator-account-id&gt;** and **&lt;validator-owner-id&gt;** in the command with your own account IDs.\n' +
               '\n' +
-              "If you're a validator, please vote with the below command if you support this proposal. " +
-              'Replace &lt;validator-account-id&gt; and &lt;validator-owner-id&gt; in the command with your own account IDs.' +
+              'Vote with the below command (choice = **yes**), if you support this proposal. \n' +
               '\n' +
               '```bash\n' +
-              `NEAR_ENV=${NEAR_ENV} near call <validator-account-id> vote '{"voting_account_id":"${config.proposalContractId}","is_vote":true}' --accountId <validator-owner-id> --gas 200000000000000\n` +
+              `NEAR_ENV=${NEAR_ENV} near call ${config.proposalContractId} vote '{"staking_pool_id":"<validator-account-id>","choice":"yes"}' --accountId <validator-owner-id> --gas 200000000000000\n` +
+              '```\n' +
+              'Vote with the below command (choice = **no**), if you are against this proposal. \n' +
+              '\n' +
+              '```bash\n' +
+              `NEAR_ENV=${NEAR_ENV} near call ${config.proposalContractId} vote '{"staking_pool_id":"<validator-account-id>","choice":"no"}' --accountId <validator-owner-id> --gas 200000000000000\n` +
               '```\n'
             }
           />
