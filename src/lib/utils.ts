@@ -14,7 +14,7 @@ export function formatBigNumber(num: Big.Big | string | number, decimals = 24): 
   const _num = Big(num);
   if (_num.eq(0)) return '0.00';
   const bigNum = Big(_num).div(Big(10).pow(decimals));
-  const numStr = bigNum.toFixed();
+  const numStr = bigNum.toFixed().split('.')[0]; // Get the integer part as a string
   const len = numStr.replace(/\D/g, '').length;
 
   let unit = '';
