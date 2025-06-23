@@ -147,7 +147,12 @@ export default function Details() {
           </TableHeader>
           <TableBody>
             {tableList.map((item) => {
-              const voteData = votes[item.accountId] || '0';
+              const isYesVote = item.choice === 'yes';
+              let voteData = votes[item.accountId] || '0';
+              if (!isYesVote) {
+                voteData = item.totalStakedBalance || '0';
+              }
+
               const num = voteData ? formatBigNumber(voteData, 24) : '0';
               const percent = getPercent(voteData);
               const relativeTime = dayjs(item.lastVoteTimestamp).fromNow();
@@ -173,12 +178,12 @@ export default function Details() {
                       rel="noopener noreferrer"
                       className="text-app-blue hover:underline flex items-center gap-1.5"
                     >
-                      {item.choice === 'yes' ? (
+                      {isYesVote ? (
                         <CircleCheck className="-mt-0.5 w-6 h-6 fill-[#00A40E] stroke-white" />
                       ) : (
                         <CircleX className="-mt-0.5 w-6 h-6 fill-red-500 stroke-white" />
                       )}
-                      {item.choice === 'yes' ? 'YAE' : 'NAY'}
+                      {isYesVote ? 'YAE' : 'NAY'}
                       <RightTopArrow />
                     </a>
                   </TableCell>
