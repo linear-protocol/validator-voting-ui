@@ -105,13 +105,21 @@ export default function Details() {
     const yesTotalPercent = Object.values(votingPowerMap)
       .filter((item) => item.percent && item.isYesVote)
       .reduce((acc, item) => acc.plus(item.percent), Big(0));
+    const yesTotal = Object.values(votingPowerMap)
+      .filter((item) => item.isYesVote)
+      .reduce((acc, item) => acc.plus(item.power), Big(0));
     const noTotalPercent = Object.values(votingPowerMap)
       .filter((item) => item.percent && !item.isYesVote)
       .reduce((acc, item) => acc.plus(item.percent), Big(0));
+    const noTotal = Object.values(votingPowerMap)
+      .filter((item) => !item.isYesVote)
+      .reduce((acc, item) => acc.plus(item.power), Big(0));
 
     return {
-      yes: yesTotalPercent.toFixed(2),
-      no: noTotalPercent.toFixed(2),
+      yesPercent: yesTotalPercent.toFixed(2),
+      yesTotal: formatBigNumber(yesTotal),
+      noPercent: noTotalPercent.toFixed(2),
+      noTotal: formatBigNumber(noTotal),
     };
   }, [votingPowerMap]);
 
@@ -147,7 +155,7 @@ export default function Details() {
   }, []);
 
   return (
-    <div className="flex flex-col w-full px-4 sm:px-8 pb-20">
+    <div className="flex flex-col w-full px-4 sm:px-8 pb-20 min-h-[400px]">
       <div className="flex items-center justify-between mb-5">
         <div
           className="border flex cursor-pointer hover:opacity-75 items-center justify-center w-9 h-9 rounded-lg border-app-black-120"
@@ -158,15 +166,21 @@ export default function Details() {
         >
           <ArrowLeft />
         </div>
-        <div className="flex items-center font-normal text-sm">
-          <span className="text-lime-400 mr-5">
-            <span className="mr-2">YEA</span>
-            {totalVotingPowerPercent.yes}%
-          </span>
-          <span className="text-red-400">
-            <span className="mr-2">NAY</span>
-            {totalVotingPowerPercent.no}%
-          </span>
+        <div className="flex flex-col font-normal text-sm min-w-[230px]">
+          <div className="flex items-center justify-between text-[#00A40E] mb-1.5">
+            <div className="flex items-center gap-2">
+              <span className="mr-2">YEA</span>
+              {totalVotingPowerPercent.yesTotal} NEAR
+            </div>
+            <div>{totalVotingPowerPercent.yesPercent}%</div>
+          </div>
+          <div className="flex items-center justify-between text-red-500">
+            <div className="flex items-center gap-2">
+              <span className="mr-2">NAY</span>
+              {totalVotingPowerPercent.noTotal} NEAR
+            </div>
+            <div>{totalVotingPowerPercent.noPercent}%</div>
+          </div>
         </div>
       </div>
       <div className="flex flex-col w-full text-app-black">

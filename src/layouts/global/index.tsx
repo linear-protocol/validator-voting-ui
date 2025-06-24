@@ -1,3 +1,4 @@
+import Footer from './footer';
 import Header from './header';
 
 interface GlobalLayoutProps {
@@ -9,6 +10,7 @@ export default function GlobalLayout({ children }: GlobalLayoutProps) {
     <div className="flex flex-col min-h-screen">
       <Header />
       {children}
+      <Footer />
     </div>
   );
 }
