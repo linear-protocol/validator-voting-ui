@@ -82,7 +82,8 @@ export default function Details() {
   const votingPowerMap: Record<string, VotingPowerItem> = useMemo(() => {
     const data: Record<string, VotingPowerItem> = {};
     tableList.forEach((item) => {
-      const isYesVote = item.vote === 'yes';
+      // check whether the validator has voted with contract states
+      const isYesVote = votes[item.accountId] !== undefined;
       let power = votes[item.accountId] || '0';
       if (!isYesVote) {
         power = item.totalStakedBalance || '0';
@@ -217,7 +218,8 @@ export default function Details() {
           </TableHeader>
           <TableBody>
             {tableList.map((item) => {
-              const isYesVote = item.vote === 'yes';
+              // check whether the validator has voted with contract states
+              const isYesVote = votes[item.accountId] !== undefined;
               const votingPower = votingPowerMap[item.accountId];
               const relativeTime = dayjs(item.lastVoteTimestamp).fromNow();
 
