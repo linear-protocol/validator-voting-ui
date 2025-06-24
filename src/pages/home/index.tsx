@@ -235,15 +235,15 @@ export default function Home() {
               '- If you are a validator, please use the CLI commands shown below to vote. We do not support voting through wallet for security considerations. This page is only used to display voting results.\n' +
               '- You can vote **yes** or **no** for the proposal. You can change your vote before the voting ends.\n' +
               '- This voting ends when **2/3 of stake votes yes** or when **the deadline passes**.\n' +
-              '- Replace **&lt;validator-account-id&gt;** and **&lt;validator-owner-id&gt;** in the command with your own account IDs.\n' +
-              "- The indexer that tracks the voting results has up to 1 minute delay. If you don't see your vote in the details page, please refresh the page after 1 minute.\n" +
+              '- Replace **&lt;validator-account-id&gt;** and **&lt;validator-owner-id&gt;** in the commands below with your own account IDs.\n' +
+              "- The indexer that tracks the voting results may have ~1 minute delay. If you don't see your vote in the details page, please refresh the page after a while.\n" +
               '\n' +
-              'Vote with the below command (vote = **yes**), if you support this proposal. \n' +
+              'Vote **yes** with the below command, if you support this proposal. \n' +
               '\n' +
               '```bash\n' +
               `NEAR_ENV=${NEAR_ENV} near call ${config.proposalContractId} vote '{"staking_pool_id":"<validator-account-id>","vote":"yes"}' --accountId <validator-owner-id> --gas 200000000000000\n` +
               '```\n' +
-              'Vote with the below command (vote = **no**), if you are against this proposal. \n' +
+              'Vote **no** with the below command, if you are against this proposal. \n' +
               '\n' +
               '```bash\n' +
               `NEAR_ENV=${NEAR_ENV} near call ${config.proposalContractId} vote '{"staking_pool_id":"<validator-account-id>","vote":"no"}' --accountId <validator-owner-id> --gas 200000000000000\n` +
