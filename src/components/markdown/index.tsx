@@ -140,6 +140,11 @@ export default function Markdown({ content }: MarkdownProps) {
             </div>
           ),
           p: (pProps) => <p {...pProps} dir="auto" />,
+          a: (aProps) => (
+            <a {...aProps} target="_blank" rel="noopener noreferrer">
+              {aProps.children}
+            </a>
+          ),
         }}
       >
         {escapedContent}

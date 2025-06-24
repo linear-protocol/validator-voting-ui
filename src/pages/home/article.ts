@@ -1,4 +1,6 @@
 /* eslint-disable no-useless-escape */
+export const PROPOSAL_URL = 'https://gov.near.org/t/reduce-inflation-for-near-protocol/41140';
+
 export const article = `
 ## **Context: NEAR’s Current Inflation Rate and Drawbacks**
 
@@ -8,7 +10,7 @@ The NEAR community needs a more sustainable inflation model that reduces inflati
 
 ## **Inflation Change Proposal for Sustainable NEAR Economics**
 
-Proposal Summary: Lower [*NEAR’s maximum inflation from 5% to 2.5%*](https://gov.near.org/) *now, with flexibility to adjust in the future*
+Proposal Summary: Lower [*NEAR’s maximum inflation from 5% to 2.5%*](${PROPOSAL_URL}) *now, with flexibility to adjust in the future*
 
 Rationale: Assuming \~0.1% of total supply burnt in transaction fees every year, 2.5% maximum inflation would result in an actual inflation of 2.4%, which is much healthier than the 4.9% we have today and make the economics of the protocol more sustainable. In addition, the current \~9% staking yield makes it unattractive for token holders to participate in DeFi on NEAR.
 
@@ -26,5 +28,5 @@ Such a change puts NEAR in line with other leading blockchains that are optimizi
 
 *Thank you for your consideration, and we look forward to your input on this proposal.*
 
-To read more about the proposal and join the discussion, please visit the [post](https://gov.near.org/).
+To read more about the proposal and join the discussion, please visit the [post](${PROPOSAL_URL}).
 `;
