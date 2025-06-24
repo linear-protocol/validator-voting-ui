@@ -240,7 +240,7 @@ export default function Home() {
               '- You can vote **yes** or **no** for the proposal. You can change your vote before the voting ends.\n' +
               `- This voting ends when **2/3 of stake votes yes** or when **the deadline (${dayjs.utc(deadline).format('MM/DD/YYYY HH:mm:ss')} UTC) passes**.\n` +
               '- Replace **&lt;validator-account-id&gt;** and **&lt;validator-owner-id&gt;** in the commands below with your own account IDs.\n' +
-              "- The indexer that tracks the voting results may have several minutes delay. If you don't see your vote in the details page, please refresh the page after a while.\n" +
+              "- [The indexer](https://thegraph.com/explorer/subgraphs/3EbPN5sxnMtSof4M8LuaSKLcNzvzDLrY3eyrRKBhVGaK?view=Query&chain=arbitrum-one) that tracks the voting results may have several minutes delay. If you don't see your vote in the details page, please refresh the page after a while.\n" +
               '\n' +
               'Vote **yes** with the below command, if you support this proposal. \n' +
               '\n' +
