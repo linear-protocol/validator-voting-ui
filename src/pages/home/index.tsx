@@ -79,7 +79,7 @@ export default function Home() {
     return (
       <div className="flex flex-col items-center mb-10">
         <h3 className="text-app-black-400 text-base sm:text-lg mb-4">
-          {votedPercent}% of Stake Voted
+          {votedPercent}% of Stake Voted for YEA
         </h3>
         <img src={ApprovedImg} className="h-[72px]" alt="" />
       </div>
@@ -177,7 +177,7 @@ export default function Home() {
           {Object.keys(votes).length} Votes & {formatBigNumber(votedStakeAmount)}
           <img src={NEARLogo} alt="near" className="flex h-5.5 -mt-0.5 rounded mx-0.5" />
           <div className="flex items-center">
-            Voting Power for YAE
+            Voting Power for YEA
             {showTooltip && (
               <Popover>
                 <PopoverTrigger>
@@ -236,7 +236,7 @@ export default function Home() {
               '- You can vote **yes** or **no** for the proposal. You can change your vote before the voting ends.\n' +
               '- This voting ends when **2/3 of stake votes yes** or when **the deadline passes**.\n' +
               '- Replace **&lt;validator-account-id&gt;** and **&lt;validator-owner-id&gt;** in the command with your own account IDs.\n' +
-              '- The indexer that tracks the voting results has up to 1 minute delay. If you don\'t see your vote in the details page, please refresh the page after 1 minute.\n' +
+              "- The indexer that tracks the voting results has up to 1 minute delay. If you don't see your vote in the details page, please refresh the page after 1 minute.\n" +
               '\n' +
               'Vote with the below command (vote = **yes**), if you support this proposal. \n' +
               '\n' +
