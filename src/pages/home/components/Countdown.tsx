@@ -1,8 +1,4 @@
-import {
-  useEffect,
-  useMemo,
-  useState,
-} from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 import dayjs from 'dayjs';
 import { useInterval } from 'react-use';
@@ -69,7 +65,7 @@ export default function Countdown({ votedPercent, deadline }: CountdownProps) {
   return (
     <div className="flex flex-col items-center mb-10">
       <h3 className="text-app-black-400 text-base sm:text-lg mb-4">
-        {votedPercent}% of Stake Voted
+        {votedPercent}% of Stake Voted for YEA
       </h3>
       <div className="flex items-center gap-x-5 sm:gap-x-9">
         <div className="flex flex-col items-center">

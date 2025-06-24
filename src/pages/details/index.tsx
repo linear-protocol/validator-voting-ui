@@ -1,7 +1,7 @@
 import Big from 'big.js';
 import dayjs from 'dayjs';
 import { ArrowLeft, CircleCheck, CircleX, MoveDown, Search } from 'lucide-react';
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import RightTopArrow from '@/assets/icons/right-top-arrow.svg?react';
@@ -22,6 +22,13 @@ import { formatBigNumber } from '@/lib/utils';
 import { getValidators } from '@/services';
 
 import type { ValidatorItem } from '@/services';
+
+interface VotingPowerItem {
+  isYesVote: boolean;
+  power: string;
+  formattedPower: string;
+  percent: string;
+}
 
 export default function Details() {
   const navigate = useNavigate();
@@ -63,11 +70,58 @@ export default function Details() {
     });
   }, [list, votes, powerOrder, dateOrder]);
 
-  const getPercent = (n: string | number) => {
-    if (!totalVotedStakeAmount || !n) return '0';
-    if (Big(totalVotedStakeAmount).eq(0)) return '0';
-    return Big(n).div(totalVotedStakeAmount).times(100).toFixed(2);
-  };
+  const getPercent = useCallback(
+    (n: string | number) => {
+      if (!totalVotedStakeAmount || !n) return '0';
+      if (Big(totalVotedStakeAmount).eq(0)) return '0';
+      return Big(n).div(totalVotedStakeAmount).times(100).toFixed(2);
+    },
+    [totalVotedStakeAmount],
+  );
+
+  const votingPowerMap: Record<string, VotingPowerItem> = useMemo(() => {
+    const data: Record<string, VotingPowerItem> = {};
+    tableList.forEach((item) => {
+      const isYesVote = item.vote === 'yes';
+      let power = votes[item.accountId] || '0';
+      if (!isYesVote) {
+        power = item.totalStakedBalance || '0';
+      }
+
+      const formattedPower = power ? formatBigNumber(power, 24) : '0';
+      const percent = getPercent(power);
+
+      data[item.accountId] = {
+        isYesVote,
+        power,
+        formattedPower,
+        percent,
+      };
+    });
+    return data;
+  }, [tableList, votes, getPercent]);
+
+  const totalVotingPowerPercent = useMemo(() => {
+    const yesTotalPercent = Object.values(votingPowerMap)
+      .filter((item) => item.percent && item.isYesVote)
+      .reduce((acc, item) => acc.plus(item.percent), Big(0));
+    const yesTotal = Object.values(votingPowerMap)
+      .filter((item) => item.isYesVote)
+      .reduce((acc, item) => acc.plus(item.power), Big(0));
+    const noTotalPercent = Object.values(votingPowerMap)
+      .filter((item) => item.percent && !item.isYesVote)
+      .reduce((acc, item) => acc.plus(item.percent), Big(0));
+    const noTotal = Object.values(votingPowerMap)
+      .filter((item) => !item.isYesVote)
+      .reduce((acc, item) => acc.plus(item.power), Big(0));
+
+    return {
+      yesPercent: yesTotalPercent.toFixed(2),
+      yesTotal: formatBigNumber(yesTotal),
+      noPercent: noTotalPercent.toFixed(2),
+      noTotal: formatBigNumber(noTotal),
+    };
+  }, [votingPowerMap]);
 
   const getNearBlocksLink = (hash: string) => {
     if (!hash) return '';
@@ -101,8 +155,8 @@ export default function Details() {
   }, []);
 
   return (
-    <div className="flex flex-col w-full px-4 sm:px-8 pb-20">
-      <div className="flex items-center mb-5">
+    <div className="flex flex-col w-full flex-1 px-4 sm:px-8 pb-20 min-h-[400px]">
+      <div className="flex items-center justify-between mb-5">
         <div
           className="border flex cursor-pointer hover:opacity-75 items-center justify-center w-9 h-9 rounded-lg border-app-black-120"
           onClick={(ev) => {
@@ -112,13 +166,29 @@ export default function Details() {
         >
           <ArrowLeft />
         </div>
+        <div className="flex flex-col font-normal text-sm min-w-[200px]">
+          <div className="flex items-center justify-between text-[#00A40E] mb-1.5">
+            <div className="flex items-center gap-2 flex-1 justify-between">
+              <span className="mr-2">YEA</span>
+              {totalVotingPowerPercent.yesTotal} NEAR
+            </div>
+            <div className="ml-10">{totalVotingPowerPercent.yesPercent}%</div>
+          </div>
+          <div className="flex items-center justify-between text-red-500">
+            <div className="flex items-center gap-2 flex-1 justify-between">
+              <span className="mr-2">NAY</span>
+              {totalVotingPowerPercent.noTotal} NEAR
+            </div>
+            <div className="ml-10">{totalVotingPowerPercent.noPercent}%</div>
+          </div>
+        </div>
       </div>
       <div className="flex flex-col w-full text-app-black">
         <Table>
           <TableHeader>
             <TableRow>
               <TableHead>Validator</TableHead>
-              <TableHead>Choice</TableHead>
+              <TableHead>Vote</TableHead>
               <TableHead className="cursor-pointer">
                 <div
                   className="flex items-center gap-0.5 min-w-[150px]"
@@ -147,14 +217,8 @@ export default function Details() {
           </TableHeader>
           <TableBody>
             {tableList.map((item) => {
-              const isYesVote = item.choice === 'yes';
-              let voteData = votes[item.accountId] || '0';
-              if (!isYesVote) {
-                voteData = item.totalStakedBalance || '0';
-              }
-
-              const num = voteData ? formatBigNumber(voteData, 24) : '0';
-              const percent = getPercent(voteData);
+              const isYesVote = item.vote === 'yes';
+              const votingPower = votingPowerMap[item.accountId];
               const relativeTime = dayjs(item.lastVoteTimestamp).fromNow();
 
               return (
@@ -183,7 +247,7 @@ export default function Details() {
                       ) : (
                         <CircleX className="-mt-0.5 w-6 h-6 fill-red-500 stroke-white" />
                       )}
-                      {isYesVote ? 'YAE' : 'NAY'}
+                      {isYesVote ? 'YEA' : 'NAY'}
                       <RightTopArrow />
                     </a>
                   </TableCell>
@@ -194,8 +258,8 @@ export default function Details() {
                     </div>
                   </TableCell>
                   <TableCell className="h-[60px] py-0 text-right">
-                    <div className="text-base mb-1">{num} NEAR</div>
-                    <div className="text-app-black-800 text-xs">{percent}%</div>
+                    <div className="text-base mb-1">{votingPower?.formattedPower || 0} NEAR</div>
+                    <div className="text-app-black-800 text-xs">{votingPower?.percent || 0}%</div>
                   </TableCell>
                 </TableRow>
               );
