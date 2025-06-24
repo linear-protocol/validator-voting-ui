@@ -19,6 +19,10 @@ import { cn, formatBigNumber } from '@/lib/utils';
 import { article } from './article';
 
 import Countdown from './components/Countdown';
+import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
+
+dayjs.extend(utc);
 
 function toFraction(x: number): string {
   if (!x) return '2/3';
@@ -234,7 +238,7 @@ export default function Home() {
               'Instructions for Validator Voting:\n' +
               '- If you are a validator, please use the CLI commands shown below to vote. We do not support voting through wallet for security considerations. This page is only used to display voting results.\n' +
               '- You can vote **yes** or **no** for the proposal. You can change your vote before the voting ends.\n' +
-              '- This voting ends when **2/3 of stake votes yes** or when **the deadline passes**.\n' +
+              `- This voting ends when **2/3 of stake votes yes** or when **the deadline (${dayjs.utc(deadline).format('MM/DD/YYYY HH:mm:ss')} UTC) passes**.\n` +
               '- Replace **&lt;validator-account-id&gt;** and **&lt;validator-owner-id&gt;** in the commands below with your own account IDs.\n' +
               "- The indexer that tracks the voting results may have several minutes delay. If you don't see your vote in the details page, please refresh the page after a while.\n" +
               '\n' +
