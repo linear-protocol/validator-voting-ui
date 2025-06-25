@@ -46,8 +46,8 @@ export default function Details() {
     // });
 
     return list.sort((a, b) => {
-      const aVote = votes[a.accountId] !== undefined ? votes[a.accountId] : a.totalStakedBalance;
-      const bVote = votes[b.accountId] !== undefined ? votes[b.accountId] : b.totalStakedBalance;
+      const aVote = a.vote === 'yes' ? votes[a.accountId] || '0' : a.totalStakedBalance;
+      const bVote = b.vote === 'yes' ? votes[b.accountId] || '0' : b.totalStakedBalance;
       const aDate = a.lastVoteTimestamp || 0;
       const bDate = b.lastVoteTimestamp || 0;
 
@@ -259,7 +259,11 @@ export default function Details() {
                         {dayjs(item.lastVoteTimestamp).format('MMM D, YYYY')}
                       </div>
                     </TableCell>
-                    <TableCell className="h-[60px] py-0 text-right">
+                    <TableCell
+                      className="h-[60px] py-0 text-right"
+                      data-state={JSON.stringify(votingPower)}
+                      data-vote={votes[item.accountId]}
+                    >
                       <div className="text-base mb-1">{votingPower?.formattedPower || 0} NEAR</div>
                       <div className="text-app-black-800 text-xs">{votingPower?.percent || 0}%</div>
                     </TableCell>
