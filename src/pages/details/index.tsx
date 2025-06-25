@@ -46,8 +46,8 @@ export default function Details() {
     // });
 
     return list.sort((a, b) => {
-      const aVote = votes[a.accountId] || '0';
-      const bVote = votes[b.accountId] || '0';
+      const aVote = votes[a.accountId] !== undefined ? votes[a.accountId] : a.totalStakedBalance;
+      const bVote = votes[b.accountId] !== undefined ? votes[b.accountId] : b.totalStakedBalance;
       const aDate = a.lastVoteTimestamp || 0;
       const bDate = b.lastVoteTimestamp || 0;
 
@@ -81,7 +81,7 @@ export default function Details() {
   const votingPowerMap: Record<string, VotingPowerItem> = useMemo(() => {
     const data: Record<string, VotingPowerItem> = {};
     tableList.forEach((item) => {
-      const isYesVote = item.vote === 'yes';
+      const isYesVote = votes[item.accountId] !== undefined;
       let power = votes[item.accountId] || '0';
       if (!isYesVote) {
         power = item.totalStakedBalance || '0';
@@ -219,7 +219,7 @@ export default function Details() {
           {!tableLoading && (
             <TableBody>
               {tableList.map((item) => {
-                const isYesVote = item.vote === 'yes';
+                const isYesVote = votes[item.accountId] !== undefined;
                 const votingPower = votingPowerMap[item.accountId];
                 const relativeTime = dayjs(item.lastVoteTimestamp).fromNow();
 
