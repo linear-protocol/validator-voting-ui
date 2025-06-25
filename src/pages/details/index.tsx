@@ -33,8 +33,7 @@ interface VotingPowerItem {
 export default function Details() {
   const navigate = useNavigate();
 
-  const { votes, totalVotedStakeAmount } = VoteContainer.useContainer();
-
+  const { isLoading: voteDataLoading, votes, totalVotedStakeAmount } = VoteContainer.useContainer();
   const [loading, setLoading] = useState(false);
   const [list, setList] = useState<ValidatorItem[]>([]);
   const [powerOrder, setPowerOrder] = useState<'asc' | 'desc' | undefined>();
@@ -154,6 +153,8 @@ export default function Details() {
       });
   }, []);
 
+  const tableLoading = loading || voteDataLoading;
+
   return (
     <div className="flex flex-col w-full flex-1 px-4 sm:px-8 pb-20 min-h-[400px]">
       <div className="flex items-center justify-between mb-5">
@@ -215,65 +216,67 @@ export default function Details() {
               </TableHead>
             </TableRow>
           </TableHeader>
-          <TableBody>
-            {tableList.map((item) => {
-              const isYesVote = item.vote === 'yes';
-              const votingPower = votingPowerMap[item.accountId];
-              const relativeTime = dayjs(item.lastVoteTimestamp).fromNow();
+          {!tableLoading && (
+            <TableBody>
+              {tableList.map((item) => {
+                const isYesVote = item.vote === 'yes';
+                const votingPower = votingPowerMap[item.accountId];
+                const relativeTime = dayjs(item.lastVoteTimestamp).fromNow();
 
-              return (
-                <TableRow key={item.id}>
-                  <TableCell className="h-[60px] flex items-center gap-2">
-                    <Avatar className="h-7 w-7">
-                      <AvatarImage
-                        src={item.metadata?.logo || AvatarImg}
-                        alt={item.metadata?.name}
-                      />
-                      <AvatarFallback>
-                        {item.metadata?.name || item.accountId.slice(0, 2)}
-                      </AvatarFallback>
-                    </Avatar>
-                    {item.accountId}
-                  </TableCell>
-                  <TableCell className="h-[60px]">
-                    <a
-                      href={getNearBlocksLink(item.lastVoteReceiptHash)}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-app-blue hover:underline flex items-center gap-1.5"
-                    >
-                      {isYesVote ? (
-                        <CircleCheck className="-mt-0.5 w-6 h-6 fill-[#00A40E] stroke-white" />
-                      ) : (
-                        <CircleX className="-mt-0.5 w-6 h-6 fill-red-500 stroke-white" />
-                      )}
-                      {isYesVote ? 'YEA' : 'NAY'}
-                      <RightTopArrow />
-                    </a>
-                  </TableCell>
-                  <TableCell className="h-[60px] py-0">
-                    <div className="text-base mb-1">{relativeTime}</div>
-                    <div className="text-app-black-800 text-xs">
-                      {dayjs(item.lastVoteTimestamp).format('MMM D, YYYY')}
-                    </div>
-                  </TableCell>
-                  <TableCell className="h-[60px] py-0 text-right">
-                    <div className="text-base mb-1">{votingPower?.formattedPower || 0} NEAR</div>
-                    <div className="text-app-black-800 text-xs">{votingPower?.percent || 0}%</div>
-                  </TableCell>
-                </TableRow>
-              );
-            })}
-          </TableBody>
+                return (
+                  <TableRow key={item.id}>
+                    <TableCell className="h-[60px] flex items-center gap-2">
+                      <Avatar className="h-7 w-7">
+                        <AvatarImage
+                          src={item.metadata?.logo || AvatarImg}
+                          alt={item.metadata?.name}
+                        />
+                        <AvatarFallback>
+                          {item.metadata?.name || item.accountId.slice(0, 2)}
+                        </AvatarFallback>
+                      </Avatar>
+                      {item.accountId}
+                    </TableCell>
+                    <TableCell className="h-[60px]">
+                      <a
+                        href={getNearBlocksLink(item.lastVoteReceiptHash)}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-app-blue hover:underline flex items-center gap-1.5"
+                      >
+                        {isYesVote ? (
+                          <CircleCheck className="-mt-0.5 w-6 h-6 fill-[#00A40E] stroke-white" />
+                        ) : (
+                          <CircleX className="-mt-0.5 w-6 h-6 fill-red-500 stroke-white" />
+                        )}
+                        {isYesVote ? 'YEA' : 'NAY'}
+                        <RightTopArrow />
+                      </a>
+                    </TableCell>
+                    <TableCell className="h-[60px] py-0">
+                      <div className="text-base mb-1">{relativeTime}</div>
+                      <div className="text-app-black-800 text-xs">
+                        {dayjs(item.lastVoteTimestamp).format('MMM D, YYYY')}
+                      </div>
+                    </TableCell>
+                    <TableCell className="h-[60px] py-0 text-right">
+                      <div className="text-base mb-1">{votingPower?.formattedPower || 0} NEAR</div>
+                      <div className="text-app-black-800 text-xs">{votingPower?.percent || 0}%</div>
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
+            </TableBody>
+          )}
         </Table>
-        {loading && (
+        {tableLoading && (
           <div className="flex flex-col gap-4 mt-4">
             <Skeleton className="h-[24px]" />
             <Skeleton className="h-[24px]" />
             <Skeleton className="h-[24px]" />
           </div>
         )}
-        {!loading && tableList.length === 0 && (
+        {!tableLoading && tableList.length === 0 && (
           <div className="flex flex-col items-center w-full text-base text-app-secondary pt-[300px]">
             <Search className="mb-2" />
             <p>No voter yet</p>
