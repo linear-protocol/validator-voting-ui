@@ -1,3 +1,4 @@
+import { Toaster } from '@/components/ui/sonner';
 import Footer from './footer';
 import Header from './header';
 
@@ -11,6 +12,7 @@ export default function GlobalLayout({ children }: GlobalLayoutProps) {
       <Header />
       {children}
       <Footer />
+      <Toaster />
     </div>
   );
 }

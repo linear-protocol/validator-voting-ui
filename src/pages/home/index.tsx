@@ -15,7 +15,7 @@ import { Button } from '@/components/ui/button';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import config from '@/config';
 import VoteContainer from '@/containers/vote';
-import { cn, formatBigNumber } from '@/lib/utils';
+import { cn, formatBigNumber, isNotNullAndNumber } from '@/lib/utils';
 import { article } from './article';
 
 import Countdown from './components/Countdown';
@@ -57,7 +57,7 @@ export default function Home() {
   const {
     isLoading,
     deadline,
-    votes,
+    votesCount,
     votedPercent,
     progressList,
     voteFinishedAt,
@@ -110,8 +110,8 @@ export default function Home() {
               <div
                 key={votedPercent}
                 className={cn('text-sm flex items-center h-full', {
-                  'justify-end pr-1.5 text-white w-full': _percent > 7,
-                  'text-app-black pl-1.5': _percent <= 7,
+                  'justify-end pr-1.5 text-white w-full': _percent > 20,
+                  'text-app-black pl-1.5': _percent <= 20,
                 })}
               >
                 {votedPercent}%
@@ -178,7 +178,8 @@ export default function Home() {
         {renderVoteProgressStatus()}
 
         <div className="flex items-center justify-center text-app-brown text-base sm:text-lg mb-5 gap-1 flex-wrap">
-          {Object.keys(votes).length} Votes & {formatBigNumber(votedStakeAmount)}
+          {isNotNullAndNumber(votesCount) ? votesCount : '-'} Votes &{' '}
+          {formatBigNumber(votedStakeAmount)}
           <img src={NEARLogo} alt="near" className="flex h-5.5 -mt-0.5 rounded mx-0.5" />
           <div className="flex items-center">
             Voting Power for YEA
