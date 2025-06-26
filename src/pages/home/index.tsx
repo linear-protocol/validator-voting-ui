@@ -110,8 +110,8 @@ export default function Home() {
               <div
                 key={votedPercent}
                 className={cn('text-sm flex items-center h-full', {
-                  'justify-end pr-1.5 text-white w-full': _percent > 7,
-                  'text-app-black pl-1.5': _percent <= 7,
+                  'justify-end pr-1.5 text-white w-full': _percent > 20,
+                  'text-app-black pl-1.5': _percent <= 20,
                 })}
               >
                 {votedPercent}%
