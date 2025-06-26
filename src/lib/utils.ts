@@ -62,3 +62,8 @@ export default function toLocaleString(
     );
   }
 }
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function isNotNullAndNumber(value: any) {
+  return value !== null && typeof value === 'number';
+}

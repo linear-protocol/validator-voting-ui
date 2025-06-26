@@ -1,17 +1,19 @@
 import Big from 'big.js';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import useSWR from 'swr';
 
 import config from '@/config';
 import { createContainer } from '@/hooks/useContainer';
 import useNear from '@/hooks/useNear';
 import { logger } from '@/lib/logger';
+import { toast } from 'sonner';
 
 interface VoteState {
   isLoading: boolean;
   deadline: number | null;
   voteFinishedAt: number | null;
   votes: Record<string, string>;
+  votesCount: number | null;
   votedStakeAmount: Big.Big;
   totalVotedStakeAmount: Big.Big;
 }
@@ -100,7 +102,7 @@ function useVoteContainer(): UseVoteContainer {
   //   logger.debug('get_proposal', data);
   // }, [viewFunction]);
 
-  const { isLoading } = useSWR(
+  const { isLoading, error } = useSWR(
     'vote_data',
     async () => {
       const promises = Promise.all([getTotalVotedStake(), getResult(), getVotes(), getDeadline()]);
@@ -111,12 +113,23 @@ function useVoteContainer(): UseVoteContainer {
     //   revalidateOnReconnect: false,
     // },
   );
+  const votesCount = useMemo(() => {
+    if (error) return null;
+    return Object.keys(votes).length;
+  }, [votes, error]);
+
+  useEffect(() => {
+    if (!error) return;
+    logger.error('VoteContainer error:', error);
+    toast.error(`Failed to load vote data. Please try again later. ${error}`);
+  }, [error]);
 
   return {
     isLoading,
     deadline,
     voteFinishedAt,
     votes,
+    votesCount,
     votedStakeAmount,
     totalVotedStakeAmount,
     votedPercent,
