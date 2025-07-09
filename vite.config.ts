@@ -27,8 +27,15 @@ export default defineConfig({
     },
   },
   build: {
+    target: 'esnext',
     rollupOptions: {
       external: ['unenv/node/process'],
+      output: {
+        format: 'es',
+      },
     },
+  },
+  define: {
+    global: 'globalThis',
   },
 });
