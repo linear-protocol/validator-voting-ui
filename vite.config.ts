@@ -29,17 +29,9 @@ export default defineConfig({
   build: {
     target: 'esnext',
     rollupOptions: {
-      external: [
-        'unenv/node/process',
-        'unenv/node/buffer',
-        'unenv/node/stream',
-        'unenv/node/crypto',
-        'unenv/node/url',
-        'unenv/node/path',
-        'unenv/node/fs',
-        'unenv/node/os',
-        'unenv/node/util',
-      ],
+      external: (id) => {
+        return id.startsWith('unenv/');
+      },
       output: {
         format: 'es',
       },
