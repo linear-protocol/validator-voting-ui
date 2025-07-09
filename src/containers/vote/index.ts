@@ -6,7 +6,7 @@ import config from '@/config';
 import { createContainer } from '@/hooks/useContainer';
 import useNear from '@/hooks/useNear';
 import { logger } from '@/lib/logger';
-import { toast } from 'sonner';
+// import { toast } from 'sonner';
 
 interface VoteState {
   isLoading: boolean;
@@ -121,7 +121,7 @@ function useVoteContainer(): UseVoteContainer {
   useEffect(() => {
     if (!error) return;
     logger.error('VoteContainer error:', error);
-    toast.error(`Failed to load vote data. Please try again later. ${error}`);
+    // toast.error(`Failed to load vote data. Please try again later. ${error}`);
   }, [error]);
 
   return {
