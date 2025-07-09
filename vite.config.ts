@@ -13,10 +13,7 @@ export default defineConfig({
     nodePolyfills({
       globals: {
         Buffer: true,
-        global: true,
-        process: true,
       },
-      protocolImports: true,
     }),
     tailwindcss(),
     svgr(),
@@ -25,19 +22,5 @@ export default defineConfig({
     alias: {
       '@': path.resolve(__dirname, './src'),
     },
-  },
-  build: {
-    target: 'esnext',
-    rollupOptions: {
-      external: (id) => {
-        return id.startsWith('unenv/');
-      },
-      output: {
-        format: 'es',
-      },
-    },
-  },
-  define: {
-    global: 'globalThis',
   },
 });
