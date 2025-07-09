@@ -4,7 +4,7 @@ const config: App.AppConfig = {
   near: {
     network: {
       networkId: 'mainnet',
-      nodeUrl: 'https://near.lava.build',
+      nodeUrl: 'https://free.rpc.fastnear.com',
     },
   },
 };
