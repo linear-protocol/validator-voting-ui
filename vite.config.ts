@@ -13,7 +13,10 @@ export default defineConfig({
     nodePolyfills({
       globals: {
         Buffer: true,
+        global: true,
+        process: true,
       },
+      protocolImports: true,
     }),
     tailwindcss(),
     svgr(),
@@ -21,6 +24,11 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
+    },
+  },
+  build: {
+    rollupOptions: {
+      external: ['unenv/node/process'],
     },
   },
 });
