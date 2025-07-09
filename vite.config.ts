@@ -29,7 +29,17 @@ export default defineConfig({
   build: {
     target: 'esnext',
     rollupOptions: {
-      external: ['unenv/node/process'],
+      external: [
+        'unenv/node/process',
+        'unenv/node/buffer',
+        'unenv/node/stream',
+        'unenv/node/crypto',
+        'unenv/node/url',
+        'unenv/node/path',
+        'unenv/node/fs',
+        'unenv/node/os',
+        'unenv/node/util',
+      ],
       output: {
         format: 'es',
       },
