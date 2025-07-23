@@ -1,8 +1,6 @@
 import './index.css';
 
-import { useMemo } from 'react';
-
-import { ArrowRight, CircleHelp } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { PulseLoader } from 'react-spinners';
 
@@ -12,7 +10,6 @@ import Bg1 from '@/assets/images/home-star-bg1.png';
 import Bg2 from '@/assets/images/home-star-bg2.png';
 import Markdown from '@/components/markdown';
 import { Button } from '@/components/ui/button';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import config from '@/config';
 import VoteContainer from '@/containers/vote';
 import { cn, formatBigNumber, isNotNullAndNumber } from '@/lib/utils';
@@ -27,57 +24,12 @@ import Big from 'big.js';
 
 dayjs.extend(utc);
 
-function toFraction(x: number): string {
-  if (!x) return '2/3';
-  if (x > 1) x = x / 100;
-  try {
-    const tolerance = 0.01;
-    let h1 = 1,
-      h2 = 0,
-      k1 = 0,
-      k2 = 1,
-      b = x;
-    do {
-      const a = Math.floor(b);
-      let aux = h1;
-      h1 = a * h1 + h2;
-      h2 = aux;
-      aux = k1;
-      k1 = a * k1 + k2;
-      k2 = aux;
-      b = 1 / (b - a);
-    } while (Math.abs(x - h1 / k1) > x * tolerance);
-
-    return h1 + '/' + k1;
-  } catch (error) {
-    console.error('Error converting to fraction:', error);
-    return '2/3';
-  }
-}
-
 export default function Home() {
   const navigate = useNavigate();
-  const {
-    isLoading,
-    deadline,
-    votes,
-    votesCount,
-    votedPercent,
-    progressList,
-    voteFinishedAt,
-    votedStakeAmount,
-  } = VoteContainer.useContainer();
+  const { isLoading, deadline, votes, votesCount, votedPercent, voteFinishedAt, votedStakeAmount } =
+    VoteContainer.useContainer();
 
   const NEAR_ENV = config.proposalContractId?.split('.').pop() === 'near' ? 'mainnet' : 'testnet';
-
-  const passed = useMemo(() => {
-    return Number(votedPercent) >= progressList[progressList.length - 1];
-  }, [votedPercent, progressList]);
-
-  const showTooltip = useMemo(() => {
-    if (voteFinishedAt) return false;
-    return passed;
-  }, [voteFinishedAt, passed]);
 
   const renderVoteProgressStatus = () => {
     if (!voteFinishedAt) {
@@ -254,21 +206,7 @@ export default function Home() {
           {isNotNullAndNumber(votesCount) ? votesCount : '-'} Votes &{' '}
           {formatBigNumber(votedStakeAmount)}
           <img src={NEARLogo} alt="near" className="flex h-5.5 -mt-0.5 rounded mx-0.5" />
-          <div className="flex items-center">
-            Voting Power for YEA
-            {showTooltip && (
-              <Popover>
-                <PopoverTrigger>
-                  <CircleHelp className="ml-1 sm:ml-2 -mt-0.5 w-5 h-5 sm:w-6 sm:h-6" />
-                </PopoverTrigger>
-                <PopoverContent sideOffset={20}>
-                  The proposal will pass if the total voted stake keeps above{' '}
-                  {toFraction(Number(votedPercent))} at the beginning of next epoch or a new vote
-                  comes in.
-                </PopoverContent>
-              </Popover>
-            )}
-          </div>
+          <div className="flex items-center">Voting Power for YEA</div>
         </div>
 
         <div className="flex items-center mb-22">
