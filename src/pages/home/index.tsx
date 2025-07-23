@@ -17,10 +17,13 @@ import config from '@/config';
 import VoteContainer from '@/containers/vote';
 import { cn, formatBigNumber, isNotNullAndNumber } from '@/lib/utils';
 import { article } from './article';
+import YesIcon from '@/assets/icons/yes.svg?react';
+import NoIcon from '@/assets/icons/no.svg?react';
 
 import Countdown from './components/Countdown';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
+import Big from 'big.js';
 
 dayjs.extend(utc);
 
@@ -57,6 +60,7 @@ export default function Home() {
   const {
     isLoading,
     deadline,
+    votes,
     votesCount,
     votedPercent,
     progressList,
@@ -82,42 +86,145 @@ export default function Home() {
 
     return (
       <div className="flex flex-col items-center mb-10">
-        <h3 className="text-app-black-400 text-base sm:text-lg mb-4">
+        {/* <h3 className="text-app-black-400 text-base sm:text-lg mb-4">
           {votedPercent}% of Stake Voted for YEA
-        </h3>
+        </h3> */}
         <img src={ApprovedImg} className="h-[72px]" alt="" />
       </div>
     );
   };
 
   const renderProgress = () => {
-    const _percent = Number(votedPercent);
+    const votedPercentNum = Number(votedPercent);
+    const targetPercent = 33.3;
+    const passed = votedPercentNum >= targetPercent;
+
+    const currentProgressPercent = passed
+      ? 100
+      : Math.round((votedPercentNum / targetPercent) * 100);
+    const totalProgressPercentText = passed ? votedPercentNum : targetPercent;
+
+    const targetBadge = (
+      <div
+        className={cn(
+          'absolute flex items-center justify-center text-white w-[68px] h-[30px] left-1/2 -top-[70px] text-sm bg-app-black rounded-full -translate-x-1/2',
+        )}
+      >
+        Target
+        <svg
+          width="13"
+          height="6"
+          viewBox="0 0 13 6"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          className={cn('absolute -bottom-[5px]', {
+            'left-1/2 -translate-x-1/2': passed,
+            'right-[20px]': !passed,
+          })}
+        >
+          <path
+            d="M7.91421 4.58579C7.13316 5.36683 5.86683 5.36684 5.08579 4.58579L0.5 0L12.5 6.05683e-07L7.91421 4.58579Z"
+            fill="#1E1E1E"
+          />
+        </svg>
+      </div>
+    );
+
     return (
-      <div className="relative w-full">
-        <div className="flex items-center w-full h-6 bg-[hsla(0,0%,12%,0.08)] rounded-full overflow-hidden">
-          {progressList.map((p) => (
+      <div className="flex flex-col w-full relative mb-6">
+        <h3 className="flex uppercase justify-center mb-5 text-lg text-[rgba(30,30,30,0.4)]">
+          Voter Turnout
+        </h3>
+        <div className="relative w-full">
+          <div className="flex items-center w-full h-6 bg-[hsla(0,0%,12%,0.08)] rounded-full overflow-hidden">
             <div
-              key={p}
-              className="flex h-full w-0.5 -translate-x-1/2 bg-[hsla(0,0%,12%,0.08)] absolute"
-              style={{ left: `${p}%` }}
-            ></div>
-          ))}
-          <div
-            className="h-full bg-[hsla(158,100%,43%,1)] rounded-full rounded-r-none flex items-center"
-            style={{ width: `${votedPercent}%` }}
-          >
-            {!!votedPercent && (
-              <div
-                key={votedPercent}
-                className={cn('text-sm flex items-center h-full', {
-                  'justify-end pr-1.5 text-white w-full': _percent > 20,
-                  'text-app-black pl-1.5': _percent <= 20,
-                })}
-              >
-                {votedPercent}%
-              </div>
-            )}
+              className="h-full bg-[hsla(158,100%,43%,1)] rounded-full flex items-center"
+              style={{ width: `${currentProgressPercent}%` }}
+            >
+              {/* {!!votedPercentNum && (
+                <div
+                  key={votedPercentNum}
+                  className={cn('text-sm flex items-center h-full', {
+                    'justify-end pr-1.5 text-white w-full': currentProgressPercent > 20,
+                    'text-app-black pl-1.5': currentProgressPercent <= 20,
+                  })}
+                >
+                  {votedPercentNum}%
+                </div>
+              )} */}
+            </div>
           </div>
+        </div>
+        <div className="flex items-center h-10 text-base justify-between relative">
+          <div>0%</div>
+
+          {passed ? (
+            <>
+              <div
+                className="absolute -translate-x-1/2"
+                style={{ left: `${Math.round((targetPercent / votedPercentNum) * 100)}%` }}
+              >
+                {targetPercent}%{targetBadge}
+                <div className="flex w-0.5 left-1/2 h-[24px] -top-[32px] -translate-x-1/2 bg-[hsla(0,0%,12%,0.08)] absolute"></div>
+              </div>
+              <div className="absolute" style={{ right: '0' }}>
+                {totalProgressPercentText}%
+              </div>
+            </>
+          ) : (
+            <div className="absolute" style={{ right: '0' }}>
+              {targetPercent}%{targetBadge}
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  };
+
+  const renderVoteBar = () => {
+    const voteData = Object.values(votes).reduce(
+      (acc, [vote, stake]) => {
+        if (!acc[vote]) {
+          acc[vote] = Big(stake);
+        } else {
+          acc[vote] = acc[vote].plus(Big(stake));
+        }
+        return acc;
+      },
+      {} as Record<'yes' | 'no', Big.Big>,
+    );
+    const voteTotal = voteData.yes?.plus(voteData.no) || Big(0);
+    const yesPercent = voteTotal.eq(0) ? 0 : voteData.yes.div(voteTotal).times(100).toFixed(2);
+    const noPercent = voteTotal.eq(0) ? 0 : voteData.no.div(voteTotal).times(100).toFixed(2);
+
+    return (
+      <div className="flex items-center w-full mb-10 gap-x-3">
+        <div className="flex flex-col gap-y-1 text-sm">
+          <YesIcon className="w-6.5 h-6.5" />
+          YEA
+        </div>
+        <div className="flex relative rounded-full items-center flex-1 h-11 w-full overflow-hidden">
+          <div
+            className="flex absolute left-0 h-full top-0 bottom-0 bg-[rgba(61,132,255,1)]"
+            style={{ width: `${yesPercent}%` }}
+          >
+            <div className="flex items-center absolute left-3 h-full text-white text-sm">
+              {yesPercent}%
+            </div>
+            <div className="absolute -right-[1px] w-[2px] bg-white h-full top-0 bottom-0 z-10"></div>
+          </div>
+          <div
+            className="flex absolute right-0 top-0 h-full bottom-0 bg-[rgba(255,63,63,1)]"
+            style={{ width: `${noPercent}%` }}
+          >
+            <div className="flex items-center absolute right-3 h-full text-white text-sm">
+              {noPercent}%
+            </div>
+          </div>
+        </div>
+        <div className="flex flex-col gap-y-1 text-sm">
+          <NoIcon className="w-6.5 h-6.5" />
+          NAY
         </div>
       </div>
     );
@@ -135,44 +242,10 @@ export default function Home() {
     return (
       <>
         {/* progress bar */}
-        <div className="flex flex-col w-full relative mb-5">
-          <div
-            className={cn(
-              'absolute flex items-center justify-center text-white w-[68px] h-[32px] -top-11 font-semibold bg-app-black rounded-full -translate-x-1/2',
-              { passed: passed },
-            )}
-            style={{
-              left: `${progressList[progressList.length - 1]}%`,
-            }}
-          >
-            Pass
-            <svg
-              width="13"
-              height="6"
-              viewBox="0 0 13 6"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-              className="absolute left-1/2 -translate-x-1/2 -bottom-[5px]"
-            >
-              <path
-                d="M7.91421 4.58579C7.13316 5.36683 5.86683 5.36684 5.08579 4.58579L0.5 0L12.5 6.05683e-07L7.91421 4.58579Z"
-                fill={passed ? '#82E55D' : '#1E1E1E'}
-              />
-            </svg>
-          </div>
+        {renderProgress()}
 
-          {renderProgress()}
-          <div className="flex items-center h-10 text-base justify-between relative">
-            <div>0%</div>
-            {progressList.map((p) => (
-              <div key={p} className="absolute -translate-x-1/2" style={{ left: `${p}%` }}>
-                {p}%
-              </div>
-            ))}
-
-            <div>100%</div>
-          </div>
-        </div>
+        {/* vote bar */}
+        {renderVoteBar()}
 
         {/* voting process status */}
         {renderVoteProgressStatus()}

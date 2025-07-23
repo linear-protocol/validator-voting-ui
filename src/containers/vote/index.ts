@@ -12,7 +12,7 @@ interface VoteState {
   isLoading: boolean;
   deadline: number | null;
   voteFinishedAt: number | null;
-  votes: Record<string, string>;
+  votes: Record<string, ['yes' | 'no', string]>;
   votesCount: number | null;
   votedStakeAmount: Big.Big;
   totalVotedStakeAmount: Big.Big;
@@ -23,7 +23,7 @@ interface VoteComputed {
   progressList: number[];
 }
 
-const PROGRESS = [66.67];
+const PROGRESS = [33.3];
 
 type UseVoteContainer = VoteState & VoteComputed;
 const contractId = config.proposalContractId;
@@ -33,7 +33,7 @@ function useVoteContainer(): UseVoteContainer {
 
   const [deadline, setDeadline] = useState<number | null>(null);
   const [voteFinishedAt, setVoteFinishedAt] = useState<number | null>(null);
-  const [votes, setVotes] = useState<Record<string, string>>({});
+  const [votes, setVotes] = useState<Record<string, ['yes' | 'no', string]>>({});
   const [votedStakeAmount, setVotedStakeAmount] = useState(Big(0));
   const [totalVotedStakeAmount, setTotalVotedStakeAmount] = useState(Big(0));
 

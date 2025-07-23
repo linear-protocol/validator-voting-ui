@@ -46,8 +46,18 @@ export default function Details() {
     // });
 
     return list.sort((a, b) => {
-      const aVote = a.vote === 'yes' ? votes[a.accountId] || '0' : a.totalStakedBalance;
-      const bVote = b.vote === 'yes' ? votes[b.accountId] || '0' : b.totalStakedBalance;
+      const aVote =
+        a.vote === 'yes'
+          ? votes[a.accountId]
+            ? votes[a.accountId][1]
+            : '0'
+          : a.totalStakedBalance;
+      const bVote =
+        b.vote === 'yes'
+          ? votes[b.accountId]
+            ? votes[b.accountId][1]
+            : '0'
+          : b.totalStakedBalance;
       const aDate = a.lastVoteTimestamp || 0;
       const bDate = b.lastVoteTimestamp || 0;
 
@@ -82,7 +92,7 @@ export default function Details() {
     const data: Record<string, VotingPowerItem> = {};
     tableList.forEach((item) => {
       const isYesVote = item.vote === 'yes';
-      let power = votes[item.accountId] || '0';
+      let power = votes[item.accountId] ? votes[item.accountId][1] : '0';
       if (!isYesVote) {
         power = item.totalStakedBalance || '0';
       }
