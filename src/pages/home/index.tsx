@@ -102,7 +102,7 @@ export default function Home() {
     const currentProgressPercent = passed
       ? 100
       : Math.round((votedPercentNum / targetPercent) * 100);
-    const totalProgressPercentText = passed ? votedPercentNum : targetPercent;
+    // const totalProgressPercentText = passed ? votedPercentNum : targetPercent;
 
     const targetBadge = (
       <div
@@ -132,7 +132,7 @@ export default function Home() {
 
     return (
       <div className="flex flex-col w-full relative mb-6">
-        <h3 className="flex uppercase justify-center mb-5 text-lg text-[rgba(30,30,30,0.4)]">
+        <h3 className="flex uppercase justify-center mb-10 text-lg text-[rgba(30,30,30,0.4)]">
           Voter Turnout
         </h3>
         <div className="relative w-full">
@@ -141,7 +141,7 @@ export default function Home() {
               className="h-full bg-[hsla(158,100%,43%,1)] rounded-full flex items-center"
               style={{ width: `${currentProgressPercent}%` }}
             >
-              {/* {!!votedPercentNum && (
+              {!!votedPercentNum && (
                 <div
                   key={votedPercentNum}
                   className={cn('text-sm flex items-center h-full', {
@@ -151,7 +151,7 @@ export default function Home() {
                 >
                   {votedPercentNum}%
                 </div>
-              )} */}
+              )}
             </div>
           </div>
         </div>
@@ -167,9 +167,9 @@ export default function Home() {
                 {targetPercent}%{targetBadge}
                 <div className="flex w-0.5 left-1/2 h-[24px] -top-[32px] -translate-x-1/2 bg-[hsla(0,0%,12%,0.08)] absolute"></div>
               </div>
-              <div className="absolute" style={{ right: '0' }}>
+              {/* <div className="absolute" style={{ right: '0' }}>
                 {totalProgressPercentText}%
-              </div>
+              </div> */}
             </>
           ) : (
             <div className="absolute" style={{ right: '0' }}>
