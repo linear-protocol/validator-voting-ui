@@ -26,8 +26,15 @@ dayjs.extend(utc);
 
 export default function Home() {
   const navigate = useNavigate();
-  const { isLoading, deadline, votes, votesCount, votedPercent, voteFinishedAt, votedStakeAmount } =
-    VoteContainer.useContainer();
+  const {
+    isLoading,
+    deadline,
+    votes,
+    yesVotesCount,
+    votedPercent,
+    voteFinishedAt,
+    votedStakeAmount,
+  } = VoteContainer.useContainer();
 
   const NEAR_ENV = config.proposalContractId?.split('.').pop() === 'near' ? 'mainnet' : 'testnet';
 
@@ -85,7 +92,7 @@ export default function Home() {
     return (
       <div className="flex flex-col w-full relative mb-6">
         <h3 className="flex uppercase justify-center mb-10 text-lg text-[rgba(30,30,30,0.4)]">
-          Voter Turnout
+          {votedPercentNum}% of STAKE VOTED
         </h3>
         <div className="relative w-full">
           <div className="flex items-center w-full h-6 bg-[hsla(0,0%,12%,0.08)] rounded-full overflow-hidden">
@@ -203,7 +210,7 @@ export default function Home() {
         {renderVoteProgressStatus()}
 
         <div className="flex items-center justify-center text-app-brown text-base sm:text-lg mb-5 gap-1 flex-wrap">
-          {isNotNullAndNumber(votesCount) ? votesCount : '-'} Votes &{' '}
+          {isNotNullAndNumber(yesVotesCount) ? yesVotesCount : '-'} Votes &{' '}
           {formatBigNumber(votedStakeAmount)}
           <img src={NEARLogo} alt="near" className="flex h-5.5 -mt-0.5 rounded mx-0.5" />
           <div className="flex items-center">Voting Power for YEA</div>

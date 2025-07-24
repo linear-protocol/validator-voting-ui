@@ -13,7 +13,7 @@ interface VoteState {
   deadline: number | null;
   voteFinishedAt: number | null;
   votes: Record<string, ['yes' | 'no', string]>;
-  votesCount: number | null;
+  yesVotesCount: number | null;
   votedStakeAmount: Big.Big;
   totalVotedStakeAmount: Big.Big;
 }
@@ -59,12 +59,12 @@ function useVoteContainer(): UseVoteContainer {
       method: 'get_total_voted_stake',
     });
     logger.debug('get_total_voted_stake', data);
-    if (!Array.isArray(data) && data.length !== 2) {
+    if (!Array.isArray(data) || data.length !== 3) {
       logger.error('get_total_voted_stake error', data);
       return;
     }
-    setVotedStakeAmount(Big(data[0]));
-    setTotalVotedStakeAmount(Big(data[1]));
+    setVotedStakeAmount(Big(data[1]));
+    setTotalVotedStakeAmount(Big(data[2]));
   }, [viewFunction]);
 
   const getResult = useCallback(async () => {
@@ -113,9 +113,9 @@ function useVoteContainer(): UseVoteContainer {
     //   revalidateOnReconnect: false,
     // },
   );
-  const votesCount = useMemo(() => {
+  const yesVotesCount = useMemo(() => {
     if (error) return null;
-    return Object.keys(votes).length;
+    return Object.values(votes).filter(([vote]) => vote === 'yes').length;
   }, [votes, error]);
 
   useEffect(() => {
@@ -129,7 +129,7 @@ function useVoteContainer(): UseVoteContainer {
     deadline,
     voteFinishedAt,
     votes,
-    votesCount,
+    yesVotesCount,
     votedStakeAmount,
     totalVotedStakeAmount,
     votedPercent,
