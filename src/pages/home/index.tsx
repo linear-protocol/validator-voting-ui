@@ -25,7 +25,7 @@ dayjs.extend(utc);
 
 export default function Home() {
   const navigate = useNavigate();
-  const { isLoading, deadline, votes, yesVotesCount, votedPercent } = VoteContainer.useContainer();
+  const { isLoading, deadline, votes, yesVotesCount, votedYeaStakeAmount, votedPercent } = VoteContainer.useContainer();
 
   const NEAR_ENV = config.proposalContractId?.split('.').pop() === 'near' ? 'mainnet' : 'testnet';
 
