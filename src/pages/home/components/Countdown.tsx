@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 
 import dayjs from 'dayjs';
 import { useInterval } from 'react-use';
+import ApprovedImg from '@/assets/images/approved.png';
 
 export interface CountdownProps {
   votedPercent: string;
@@ -11,6 +12,8 @@ export interface CountdownProps {
 export default function Countdown({ deadline }: CountdownProps) {
   const [isPageVisible, setPageVisibility] = useState(!document.hidden);
   const [countdownSeconds, setCountdownSeconds] = useState<number | null>(null);
+
+  const finished = deadline && Date.now() > deadline;
 
   const deadlineFromNow = useMemo(() => {
     if (!countdownSeconds) return null;
@@ -61,6 +64,17 @@ export default function Countdown({ deadline }: CountdownProps) {
   );
 
   if (!deadlineFromNow) return null;
+
+  if (finished) {
+    return (
+      <div className="flex flex-col items-center mb-10">
+        {/* <h3 className="text-app-black-400 text-base sm:text-lg mb-4">
+          {votedPercent}% of Stake Voted for YEA
+        </h3> */}
+        <img src={ApprovedImg} className="h-[72px]" alt="" />
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col items-center mb-10">
