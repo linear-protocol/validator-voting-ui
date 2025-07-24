@@ -1,6 +1,6 @@
 const config: App.AppConfig = {
-  proposalContractId: 'reduce-inflation.near',
-  validatorApi: 'https://nearblocks.io/address/test-proposal.near',
+  proposalContractId: 'test-proposal.near',
+  validatorApi: 'https://validator-voting-api.linearprotocol.org',
   near: {
     network: {
       networkId: 'mainnet',
