@@ -153,7 +153,7 @@ export default function Home() {
       {} as Record<'yes' | 'no', Big.Big>,
     );
 
-    const safeBig = (val: any): Big => val instanceof Big ? val : Big(val || 0);
+    const safeBig = (val: Big.Big | undefined): Big => val instanceof Big ? val : Big(val || 0);
 
     const yes = safeBig(voteData?.yes);
     const no = safeBig(voteData?.no);
