@@ -14,6 +14,7 @@ interface VoteState {
   voteFinishedAt: number | null;
   votes: Record<string, ['yes' | 'no', string]>;
   yesVotesCount: number | null;
+  votedYeaStakeAmount: Big.Big;
   votedStakeAmount: Big.Big;
   totalVotedStakeAmount: Big.Big;
 }
@@ -35,6 +36,7 @@ function useVoteContainer(): UseVoteContainer {
   const [voteFinishedAt, setVoteFinishedAt] = useState<number | null>(null);
   const [votes, setVotes] = useState<Record<string, ['yes' | 'no', string]>>({});
   const [votedStakeAmount, setVotedStakeAmount] = useState(Big(0));
+  const [votedYeaStakeAmount, setVotedYeaStakeAmount] = useState(Big(0));
   const [totalVotedStakeAmount, setTotalVotedStakeAmount] = useState(Big(0));
 
   const _votedPercent = useMemo(() => {
@@ -63,6 +65,7 @@ function useVoteContainer(): UseVoteContainer {
       logger.error('get_total_voted_stake error', data);
       return;
     }
+    setVotedYeaStakeAmount(Big(data[0]));
     setVotedStakeAmount(Big(data[1]));
     setTotalVotedStakeAmount(Big(data[2]));
   }, [viewFunction]);
@@ -131,6 +134,7 @@ function useVoteContainer(): UseVoteContainer {
     votes,
     yesVotesCount,
     votedStakeAmount,
+    votedYeaStakeAmount,
     totalVotedStakeAmount,
     votedPercent,
     progressList: PROGRESS,

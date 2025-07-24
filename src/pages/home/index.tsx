@@ -34,6 +34,7 @@ export default function Home() {
     votedPercent,
     voteFinishedAt,
     votedStakeAmount,
+    votedYeaStakeAmount,
   } = VoteContainer.useContainer();
 
   const NEAR_ENV = config.proposalContractId?.split('.').pop() === 'near' ? 'mainnet' : 'testnet';
@@ -211,7 +212,7 @@ export default function Home() {
 
         <div className="flex items-center justify-center text-app-brown text-base sm:text-lg mb-5 gap-1 flex-wrap">
           {isNotNullAndNumber(yesVotesCount) ? yesVotesCount : '-'} Votes &{' '}
-          {formatBigNumber(votedStakeAmount)}
+          {formatBigNumber(votedYeaStakeAmount)}
           <img src={NEARLogo} alt="near" className="flex h-5.5 -mt-0.5 rounded mx-0.5" />
           <div className="flex items-center">Voting Power for YEA</div>
         </div>
@@ -260,7 +261,6 @@ export default function Home() {
               `- This voting ends when **2/3 of stake votes yes** or when **the deadline (${dayjs.utc(deadline).format('MM/DD/YYYY HH:mm:ss')} UTC) passes**.\n` +
               '- Replace **&lt;validator-account-id&gt;** and **&lt;validator-owner-id&gt;** in the commands below with your own account IDs.\n' +
               "- [The indexer](https://thegraph.com/explorer/subgraphs/3EbPN5sxnMtSof4M8LuaSKLcNzvzDLrY3eyrRKBhVGaK?view=Query&chain=arbitrum-one) that tracks the voting results may have several minutes delay. If you don't see your vote in the details page, please refresh the page after a while.\n" +
-              "- If the voting power of your validator is **0** on the details page, it's probably because your validator is kicked out in recent epochs. This is a known limitation of the current voting contract. Please try **vote again** after your validator is back online for such case.\n" +
               '\n' +
               'Vote **yes** with the below command, if you support this proposal. \n' +
               '\n' +
