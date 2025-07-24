@@ -33,7 +33,6 @@ export default function Home() {
     yesVotesCount,
     votedPercent,
     voteFinishedAt,
-    votedStakeAmount,
     votedYeaStakeAmount,
   } = VoteContainer.useContainer();
 
@@ -153,9 +152,15 @@ export default function Home() {
       },
       {} as Record<'yes' | 'no', Big.Big>,
     );
-    const voteTotal = voteData.yes?.plus(voteData.no) || Big(0);
-    const yesPercent = voteTotal.eq(0) ? 0 : voteData.yes.div(voteTotal).times(100).toFixed(2);
-    const noPercent = voteTotal.eq(0) ? 0 : voteData.no.div(voteTotal).times(100).toFixed(2);
+
+    const safeBig = (val: any): Big => val instanceof Big ? val : Big(val || 0);
+
+    const yes = safeBig(voteData?.yes);
+    const no = safeBig(voteData?.no);
+    const voteTotal = yes.plus(no);
+
+    const yesPercent = voteTotal.eq(0) ? "0.00" : yes.div(voteTotal).times(100).toFixed(2);
+    const noPercent = voteTotal.eq(0) ? "0.00" : no.div(voteTotal).times(100).toFixed(2);
 
     return (
       <div className="flex items-center w-full mb-10 gap-x-3">
