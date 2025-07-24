@@ -15,6 +15,7 @@ import { cn, formatBigNumber, isNotNullAndNumber } from '@/lib/utils';
 import { article } from './article';
 import YesIcon from '@/assets/icons/yes.svg?react';
 import NoIcon from '@/assets/icons/no.svg?react';
+import ApprovedImg from '@/assets/images/approved.png';
 
 import Countdown from './components/Countdown';
 import dayjs from 'dayjs';
@@ -25,12 +26,22 @@ dayjs.extend(utc);
 
 export default function Home() {
   const navigate = useNavigate();
-  const { isLoading, deadline, votes, yesVotesCount, votedPercent, votedStakeAmount } =
+  const { isLoading, deadline, votes, voteResult, yesVotesCount, votedPercent, votedStakeAmount } =
     VoteContainer.useContainer();
 
   const NEAR_ENV = config.proposalContractId?.split('.').pop() === 'near' ? 'mainnet' : 'testnet';
 
   const renderVoteProgressStatus = () => {
+    if (voteResult) {
+      return (
+        <div className="flex flex-col items-center mb-10">
+          {/* <h3 className="text-app-black-400 text-base sm:text-lg mb-4">
+          {votedPercent}% of Stake Voted for YEA
+        </h3> */}
+          <img src={ApprovedImg} className="h-[72px]" alt="" />
+        </div>
+      );
+    }
     return <Countdown deadline={deadline} votedPercent={votedPercent} />;
   };
 

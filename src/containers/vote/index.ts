@@ -10,6 +10,7 @@ import { toast } from 'sonner';
 
 interface VoteState {
   isLoading: boolean;
+  voteResult: boolean;
   deadline: number | null;
   votes: Record<string, ['yes' | 'no', string]>;
   yesVotesCount: number | null;
@@ -31,7 +32,7 @@ function useVoteContainer(): UseVoteContainer {
   const { viewFunction } = useNear();
 
   const [deadline, setDeadline] = useState<number | null>(null);
-  // const [voteFinishedAt, setVoteFinishedAt] = useState<number | null>(null);
+  const [voteResult, setVoteResult] = useState(false);
   const [votes, setVotes] = useState<Record<string, ['yes' | 'no', string]>>({});
   const [votedStakeAmount, setVotedStakeAmount] = useState(Big(0));
   const [totalVotedStakeAmount, setTotalVotedStakeAmount] = useState(Big(0));
@@ -60,14 +61,14 @@ function useVoteContainer(): UseVoteContainer {
     setTotalVotedStakeAmount(Big(data[2]));
   }, [viewFunction]);
 
-  // const getResult = useCallback(async () => {
-  //   const data = await viewFunction({
-  //     contractId: contractId,
-  //     method: 'get_result',
-  //   });
-  //   logger.debug('get_result', data);
-  //   setVoteFinishedAt(data || null);
-  // }, [viewFunction]);
+  const getResult = useCallback(async () => {
+    const data = await viewFunction({
+      contractId: contractId,
+      method: 'get_result',
+    });
+    logger.debug('get_result', data);
+    setVoteResult(data || false);
+  }, [viewFunction]);
 
   const getVotes = useCallback(async () => {
     const data = await viewFunction({
@@ -98,7 +99,7 @@ function useVoteContainer(): UseVoteContainer {
   const { isLoading, error } = useSWR(
     'vote_data',
     async () => {
-      const promises = Promise.all([getTotalVotedStake(), getVotes(), getDeadline()]);
+      const promises = Promise.all([getTotalVotedStake(), getVotes(), getDeadline(), getResult()]);
       return await promises;
     },
     // {
@@ -119,6 +120,7 @@ function useVoteContainer(): UseVoteContainer {
 
   return {
     isLoading,
+    voteResult,
     deadline,
     votes,
     yesVotesCount,
