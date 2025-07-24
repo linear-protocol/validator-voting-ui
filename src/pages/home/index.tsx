@@ -5,7 +5,6 @@ import { useNavigate } from 'react-router-dom';
 import { PulseLoader } from 'react-spinners';
 
 import NEARLogo from '@/assets/images/near-green.jpg';
-import ApprovedImg from '@/assets/images/approved.png';
 import Bg1 from '@/assets/images/home-star-bg1.png';
 import Bg2 from '@/assets/images/home-star-bg2.png';
 import Markdown from '@/components/markdown';
@@ -26,31 +25,13 @@ dayjs.extend(utc);
 
 export default function Home() {
   const navigate = useNavigate();
-  const {
-    isLoading,
-    deadline,
-    votes,
-    yesVotesCount,
-    votedPercent,
-    voteFinishedAt,
-    votedStakeAmount,
-  } = VoteContainer.useContainer();
+  const { isLoading, deadline, votes, yesVotesCount, votedPercent, votedStakeAmount } =
+    VoteContainer.useContainer();
 
   const NEAR_ENV = config.proposalContractId?.split('.').pop() === 'near' ? 'mainnet' : 'testnet';
 
   const renderVoteProgressStatus = () => {
-    if (!voteFinishedAt) {
-      return <Countdown deadline={deadline} votedPercent={votedPercent} />;
-    }
-
-    return (
-      <div className="flex flex-col items-center mb-10">
-        {/* <h3 className="text-app-black-400 text-base sm:text-lg mb-4">
-          {votedPercent}% of Stake Voted for YEA
-        </h3> */}
-        <img src={ApprovedImg} className="h-[72px]" alt="" />
-      </div>
-    );
+    return <Countdown deadline={deadline} votedPercent={votedPercent} />;
   };
 
   const renderProgress = () => {

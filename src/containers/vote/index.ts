@@ -11,7 +11,6 @@ import { toast } from 'sonner';
 interface VoteState {
   isLoading: boolean;
   deadline: number | null;
-  voteFinishedAt: number | null;
   votes: Record<string, ['yes' | 'no', string]>;
   yesVotesCount: number | null;
   votedStakeAmount: Big.Big;
@@ -32,7 +31,7 @@ function useVoteContainer(): UseVoteContainer {
   const { viewFunction } = useNear();
 
   const [deadline, setDeadline] = useState<number | null>(null);
-  const [voteFinishedAt, setVoteFinishedAt] = useState<number | null>(null);
+  // const [voteFinishedAt, setVoteFinishedAt] = useState<number | null>(null);
   const [votes, setVotes] = useState<Record<string, ['yes' | 'no', string]>>({});
   const [votedStakeAmount, setVotedStakeAmount] = useState(Big(0));
   const [totalVotedStakeAmount, setTotalVotedStakeAmount] = useState(Big(0));
@@ -44,14 +43,8 @@ function useVoteContainer(): UseVoteContainer {
   }, [votedStakeAmount, totalVotedStakeAmount]);
 
   const votedPercent = useMemo(() => {
-    const _percent = Number(_votedPercent);
-    const lastProgress = PROGRESS[PROGRESS.length - 1];
-    if (voteFinishedAt) {
-      if (_percent >= lastProgress) return _votedPercent;
-      return lastProgress.toFixed(2);
-    }
     return _votedPercent;
-  }, [_votedPercent, voteFinishedAt]);
+  }, [_votedPercent]);
 
   const getTotalVotedStake = useCallback(async () => {
     const data = await viewFunction({
@@ -67,14 +60,14 @@ function useVoteContainer(): UseVoteContainer {
     setTotalVotedStakeAmount(Big(data[2]));
   }, [viewFunction]);
 
-  const getResult = useCallback(async () => {
-    const data = await viewFunction({
-      contractId: contractId,
-      method: 'get_result',
-    });
-    logger.debug('get_result', data);
-    setVoteFinishedAt(data || null);
-  }, [viewFunction]);
+  // const getResult = useCallback(async () => {
+  //   const data = await viewFunction({
+  //     contractId: contractId,
+  //     method: 'get_result',
+  //   });
+  //   logger.debug('get_result', data);
+  //   setVoteFinishedAt(data || null);
+  // }, [viewFunction]);
 
   const getVotes = useCallback(async () => {
     const data = await viewFunction({
@@ -105,7 +98,7 @@ function useVoteContainer(): UseVoteContainer {
   const { isLoading, error } = useSWR(
     'vote_data',
     async () => {
-      const promises = Promise.all([getTotalVotedStake(), getResult(), getVotes(), getDeadline()]);
+      const promises = Promise.all([getTotalVotedStake(), getVotes(), getDeadline()]);
       return await promises;
     },
     // {
@@ -127,7 +120,6 @@ function useVoteContainer(): UseVoteContainer {
   return {
     isLoading,
     deadline,
-    voteFinishedAt,
     votes,
     yesVotesCount,
     votedStakeAmount,
