@@ -16,7 +16,7 @@ interface VoteState {
   yesVotesCount: number | null;
   votedYeaStakeAmount: Big.Big;
   votedStakeAmount: Big.Big;
-  totalVotedStakeAmount: Big.Big;
+  totalStakeAmount: Big.Big;
 }
 
 interface VoteComputed {
@@ -37,13 +37,13 @@ function useVoteContainer(): UseVoteContainer {
   const [votes, setVotes] = useState<Record<string, ['yes' | 'no', string]>>({});
   const [votedStakeAmount, setVotedStakeAmount] = useState(Big(0));
   const [votedYeaStakeAmount, setVotedYeaStakeAmount] = useState(Big(0));
-  const [totalVotedStakeAmount, setTotalVotedStakeAmount] = useState(Big(0));
+  const [totalStakeAmount, setTotalStakeAmount] = useState(Big(0));
 
   const _votedPercent = useMemo(() => {
-    if (!totalVotedStakeAmount) return '0';
-    if (totalVotedStakeAmount.eq(0)) return '0';
-    return votedStakeAmount.div(totalVotedStakeAmount).times(100).toFixed(2) || '0';
-  }, [votedStakeAmount, totalVotedStakeAmount]);
+    if (!totalStakeAmount) return '0';
+    if (totalStakeAmount.eq(0)) return '0';
+    return votedStakeAmount.div(totalStakeAmount).times(100).toFixed(2) || '0';
+  }, [votedStakeAmount, totalStakeAmount]);
 
   const votedPercent = useMemo(() => {
     return _votedPercent;
@@ -61,7 +61,7 @@ function useVoteContainer(): UseVoteContainer {
     }
     setVotedYeaStakeAmount(Big(data[0]));
     setVotedStakeAmount(Big(data[1]));
-    setTotalVotedStakeAmount(Big(data[2]));
+    setTotalStakeAmount(Big(data[2]));
   }, [viewFunction]);
 
   const getResult = useCallback(async () => {
@@ -129,7 +129,7 @@ function useVoteContainer(): UseVoteContainer {
     yesVotesCount,
     votedStakeAmount,
     votedYeaStakeAmount,
-    totalVotedStakeAmount,
+    totalStakeAmount,
     votedPercent,
     progressList: PROGRESS,
   };

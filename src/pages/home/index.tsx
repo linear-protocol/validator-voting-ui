@@ -26,8 +26,15 @@ dayjs.extend(utc);
 
 export default function Home() {
   const navigate = useNavigate();
-  const { isLoading, deadline, votes, voteResult, yesVotesCount, votedPercent, votedYeaStakeAmount } =
-    VoteContainer.useContainer();
+  const {
+    isLoading,
+    deadline,
+    votes,
+    voteResult,
+    yesVotesCount,
+    votedPercent,
+    votedYeaStakeAmount,
+  } = VoteContainer.useContainer();
 
   const NEAR_ENV = config.proposalContractId?.split('.').pop() === 'near' ? 'mainnet' : 'testnet';
 
@@ -53,7 +60,6 @@ export default function Home() {
     const currentProgressPercent = passed
       ? 100
       : Math.round((votedPercentNum / targetPercent) * 100);
-    // const totalProgressPercentText = passed ? votedPercentNum : targetPercent;
 
     const targetBadge = (
       <div
@@ -118,9 +124,6 @@ export default function Home() {
                 {targetPercent}%{targetBadge}
                 <div className="flex w-0.5 left-1/2 h-[24px] -top-[32px] -translate-x-1/2 bg-[hsla(0,0%,12%,0.08)] absolute"></div>
               </div>
-              {/* <div className="absolute" style={{ right: '0' }}>
-                {totalProgressPercentText}%
-              </div> */}
             </>
           ) : (
             <div className="absolute" style={{ right: '0' }}>
@@ -145,14 +148,14 @@ export default function Home() {
       {} as Record<'yes' | 'no', Big.Big>,
     );
 
-    const safeBig = (val: Big.Big | undefined): Big => val instanceof Big ? val : Big(val || 0);
+    const safeBig = (val: Big.Big | undefined): Big => (val instanceof Big ? val : Big(val || 0));
 
     const yes = safeBig(voteData?.yes);
     const no = safeBig(voteData?.no);
     const voteTotal = yes.plus(no);
 
-    const yesPercent = voteTotal.eq(0) ? "0.00" : yes.div(voteTotal).times(100).toFixed(2);
-    const noPercent = voteTotal.eq(0) ? "0.00" : no.div(voteTotal).times(100).toFixed(2);
+    const yesPercent = voteTotal.eq(0) ? '0.00' : yes.div(voteTotal).times(100).toFixed(2);
+    const noPercent = voteTotal.eq(0) ? '0.00' : no.div(voteTotal).times(100).toFixed(2);
 
     return (
       <div className="flex items-center w-full mb-10 gap-x-3">

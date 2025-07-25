@@ -33,7 +33,7 @@ interface VotingPowerItem {
 export default function Details() {
   const navigate = useNavigate();
 
-  const { isLoading: voteDataLoading, votes, totalVotedStakeAmount } = VoteContainer.useContainer();
+  const { isLoading: voteDataLoading, votes, totalStakeAmount } = VoteContainer.useContainer();
   const [loading, setLoading] = useState(false);
   const [list, setList] = useState<ValidatorItem[]>([]);
   const [powerOrder, setPowerOrder] = useState<'asc' | 'desc' | undefined>();
@@ -81,11 +81,11 @@ export default function Details() {
 
   const getPercent = useCallback(
     (n: string | number) => {
-      if (!totalVotedStakeAmount || !n) return '0';
-      if (Big(totalVotedStakeAmount).eq(0)) return '0';
-      return Big(n).div(totalVotedStakeAmount).times(100).toFixed(2);
+      if (!totalStakeAmount || !n) return '0';
+      if (Big(totalStakeAmount).eq(0)) return '0';
+      return Big(n).div(totalStakeAmount).times(100).toFixed(2);
     },
-    [totalVotedStakeAmount],
+    [totalStakeAmount],
   );
 
   const votingPowerMap: Record<string, VotingPowerItem> = useMemo(() => {
