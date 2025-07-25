@@ -24,7 +24,7 @@ interface VoteComputed {
   progressList: number[];
 }
 
-const PROGRESS = [33.3];
+const PROGRESS = [33.33];
 
 type UseVoteContainer = VoteState & VoteComputed;
 const contractId = config.proposalContractId;

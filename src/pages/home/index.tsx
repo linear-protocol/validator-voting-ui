@@ -54,7 +54,7 @@ export default function Home() {
 
   const renderProgress = () => {
     const votedPercentNum = Number(votedPercent);
-    const targetPercent = 33.3;
+    const targetPercent = 33.33;
     const passed = votedPercentNum >= targetPercent;
 
     const currentProgressPercent = passed
