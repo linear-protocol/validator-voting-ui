@@ -255,7 +255,7 @@ export default function Home() {
               'Instructions for Validator Voting:\n' +
               '- If you are a validator, please use the CLI commands shown below to vote. We do not support voting through wallet for security considerations. This page is only used to display voting results.\n' +
               `- You can vote **yes** or **no** for the proposal. You can change your vote before the deadline (**${dayjs.utc(deadline).format('MM/DD/YYYY HH:mm:ss')} UTC**).\n` +
-              '- This proposal will be approved when more than 1/3 of total stake joins the voting and more than 2/3 of stake participating in the voting is **yes**.\n' +
+              '- This proposal will be approved when more than **1/3 of total stake** joins the voting and more than **2/3 of stake participating in the voting** is **yes**.\n' +
               '- Replace **&lt;validator-account-id&gt;** and **&lt;validator-owner-id&gt;** in the commands below with your own account IDs.\n' +
               "- [The indexer](https://thegraph.com/explorer/subgraphs/3EbPN5sxnMtSof4M8LuaSKLcNzvzDLrY3eyrRKBhVGaK?view=Query&chain=arbitrum-one) that tracks the voting results may have several minutes delay. If you don't see your vote in the details page, please refresh the page after a while.\n" +
               '\n' +
