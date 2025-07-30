@@ -55,11 +55,11 @@ export default function Home() {
   const renderProgress = () => {
     const votedPercentNum = Number(votedPercent);
     const targetPercent = 33.33;
-    const passed = votedPercentNum >= targetPercent;
-
-    const currentProgressPercent = passed
+    const gt50Percent = votedPercentNum >= 50;
+    const totalPercent = gt50Percent ? votedPercentNum : 50;
+    const currentProgressPercent = gt50Percent
       ? 100
-      : Math.round((votedPercentNum / targetPercent) * 100);
+      : Math.round((votedPercentNum / totalPercent) * 100);
 
     const targetBadge = (
       <div
@@ -75,8 +75,8 @@ export default function Home() {
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
           className={cn('absolute -bottom-[5px]', {
-            'left-1/2 -translate-x-1/2': passed,
-            'right-[20px]': !passed,
+            'left-1/2 -translate-x-1/2': gt50Percent,
+            'right-[20px]': !gt50Percent,
           })}
         >
           <path
@@ -115,21 +115,15 @@ export default function Home() {
         <div className="flex items-center h-10 text-base justify-between relative">
           <div>0%</div>
 
-          {passed ? (
-            <>
-              <div
-                className="absolute -translate-x-1/2"
-                style={{ left: `${Math.round((targetPercent / votedPercentNum) * 100)}%` }}
-              >
-                {targetPercent}%{targetBadge}
-                <div className="flex w-0.5 left-1/2 h-[24px] -top-[32px] -translate-x-1/2 bg-[hsla(0,0%,12%,0.08)] absolute"></div>
-              </div>
-            </>
-          ) : (
-            <div className="absolute" style={{ right: '0' }}>
-              {targetPercent}%{targetBadge}
-            </div>
-          )}
+          <div
+            className="absolute -translate-x-1/2"
+            style={{ left: `${Math.round((targetPercent / totalPercent) * 100)}%` }}
+          >
+            {targetPercent}%{targetBadge}
+            <div className="flex w-0.5 left-1/2 h-[24px] -top-[32px] -translate-x-1/2 bg-[hsla(0,0%,12%,0.08)] absolute"></div>
+          </div>
+
+          {!gt50Percent && <div>50%</div>}
         </div>
       </div>
     );
