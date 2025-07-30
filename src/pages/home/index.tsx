@@ -67,7 +67,7 @@ export default function Home() {
           'absolute flex items-center justify-center text-white w-[68px] h-[30px] left-1/2 -top-[70px] text-sm bg-app-black rounded-full -translate-x-1/2',
         )}
       >
-        Target
+        Quorum
         <svg
           width="13"
           height="6"
