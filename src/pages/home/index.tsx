@@ -18,7 +18,7 @@ import VoteContainer from '@/containers/vote';
 import { cn, formatBigNumber, isNotNullAndNumber } from '@/lib/utils';
 import { article } from './article';
 
-import Countdown from './components/Countdown';
+// import Countdown from './components/Countdown';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 
@@ -77,7 +77,12 @@ export default function Home() {
 
   const renderVoteProgressStatus = () => {
     if (!voteFinishedAt) {
-      return <Countdown deadline={deadline} votedPercent={votedPercent} />;
+      return (
+        <div className="flex flex-col items-center mb-10 text-app-black-400 text-base sm:text-l">
+          The voting has ended
+        </div>
+      );
+      // return <Countdown deadline={deadline} votedPercent={votedPercent} />;
     }
 
     return (
