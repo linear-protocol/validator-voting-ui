@@ -12,6 +12,8 @@ export default function Countdown({ votedPercent, deadline }: CountdownProps) {
   const [isPageVisible, setPageVisibility] = useState(!document.hidden);
   const [countdownSeconds, setCountdownSeconds] = useState<number | null>(null);
 
+  const finished = deadline && Date.now() > deadline;
+
   const deadlineFromNow = useMemo(() => {
     if (!countdownSeconds) return null;
     const diffSeconds = countdownSeconds;
@@ -59,6 +61,14 @@ export default function Countdown({ votedPercent, deadline }: CountdownProps) {
     },
     deadline ? 1000 : null,
   );
+
+  if (finished) {
+    return (
+      <div className="flex flex-col items-center mb-10 text-app-black-400 text-lg sm:text-xl">
+        The voting has ended
+      </div>
+    );
+  }
 
   if (!deadlineFromNow) return null;
 
