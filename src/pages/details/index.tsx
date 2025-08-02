@@ -33,7 +33,7 @@ interface VotingPowerItem {
 export default function Details() {
   const navigate = useNavigate();
 
-  const { isLoading: voteDataLoading, votes, totalVotedStakeAmount } = VoteContainer.useContainer();
+  const { isLoading: voteDataLoading, votes, totalStakeAmount } = VoteContainer.useContainer();
   const [loading, setLoading] = useState(false);
   const [list, setList] = useState<ValidatorItem[]>([]);
   const [powerOrder, setPowerOrder] = useState<'asc' | 'desc' | undefined>();
@@ -46,8 +46,8 @@ export default function Details() {
     // });
 
     return list.sort((a, b) => {
-      const aVote = a.vote === 'yes' ? votes[a.accountId] || '0' : a.totalStakedBalance;
-      const bVote = b.vote === 'yes' ? votes[b.accountId] || '0' : b.totalStakedBalance;
+      const aVote = votes[a.accountId] ? votes[a.accountId][1] : '0';
+      const bVote = votes[b.accountId] ? votes[b.accountId][1] : '0';
       const aDate = a.lastVoteTimestamp || 0;
       const bDate = b.lastVoteTimestamp || 0;
 
@@ -71,22 +71,18 @@ export default function Details() {
 
   const getPercent = useCallback(
     (n: string | number) => {
-      if (!totalVotedStakeAmount || !n) return '0';
-      if (Big(totalVotedStakeAmount).eq(0)) return '0';
-      return Big(n).div(totalVotedStakeAmount).times(100).toFixed(2);
+      if (!totalStakeAmount || !n) return '0';
+      if (Big(totalStakeAmount).eq(0)) return '0';
+      return Big(n).div(totalStakeAmount).times(100).toFixed(2);
     },
-    [totalVotedStakeAmount],
+    [totalStakeAmount],
   );
 
   const votingPowerMap: Record<string, VotingPowerItem> = useMemo(() => {
     const data: Record<string, VotingPowerItem> = {};
     tableList.forEach((item) => {
       const isYesVote = item.vote === 'yes';
-      let power = votes[item.accountId] || '0';
-      if (!isYesVote) {
-        power = item.totalStakedBalance || '0';
-      }
-
+      const power = votes[item.accountId] ? votes[item.accountId][1] : '0';
       const formattedPower = power ? formatBigNumber(power, 24) : '0';
       const percent = getPercent(power);
 

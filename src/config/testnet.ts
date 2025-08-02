@@ -1,5 +1,5 @@
 const config: App.AppConfig = {
-  proposalContractId: 'reduce-inflation.testnet',
+  proposalContractId: 'mock-proposal-alpha.testnet',
   validatorApi: 'https://validator-voting-api.linearprotocol.org',
   near: {
     network: {

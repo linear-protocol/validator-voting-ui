@@ -10,12 +10,13 @@ import { toast } from 'sonner';
 
 interface VoteState {
   isLoading: boolean;
+  voteResult: boolean;
   deadline: number | null;
-  voteFinishedAt: number | null;
-  votes: Record<string, string>;
-  votesCount: number | null;
+  votes: Record<string, ['yes' | 'no', string]>;
+  yesVotesCount: number | null;
+  votedYeaStakeAmount: Big.Big;
   votedStakeAmount: Big.Big;
-  totalVotedStakeAmount: Big.Big;
+  totalStakeAmount: Big.Big;
 }
 
 interface VoteComputed {
@@ -23,7 +24,7 @@ interface VoteComputed {
   progressList: number[];
 }
 
-const PROGRESS = [66.67];
+const PROGRESS = [33.33];
 
 type UseVoteContainer = VoteState & VoteComputed;
 const contractId = config.proposalContractId;
@@ -32,26 +33,21 @@ function useVoteContainer(): UseVoteContainer {
   const { viewFunction } = useNear();
 
   const [deadline, setDeadline] = useState<number | null>(null);
-  const [voteFinishedAt, setVoteFinishedAt] = useState<number | null>(null);
-  const [votes, setVotes] = useState<Record<string, string>>({});
+  const [voteResult, setVoteResult] = useState(false);
+  const [votes, setVotes] = useState<Record<string, ['yes' | 'no', string]>>({});
   const [votedStakeAmount, setVotedStakeAmount] = useState(Big(0));
-  const [totalVotedStakeAmount, setTotalVotedStakeAmount] = useState(Big(0));
+  const [votedYeaStakeAmount, setVotedYeaStakeAmount] = useState(Big(0));
+  const [totalStakeAmount, setTotalStakeAmount] = useState(Big(0));
 
   const _votedPercent = useMemo(() => {
-    if (!totalVotedStakeAmount) return '0';
-    if (totalVotedStakeAmount.eq(0)) return '0';
-    return votedStakeAmount.div(totalVotedStakeAmount).times(100).toFixed(2) || '0';
-  }, [votedStakeAmount, totalVotedStakeAmount]);
+    if (!totalStakeAmount) return '0';
+    if (totalStakeAmount.eq(0)) return '0';
+    return votedStakeAmount.div(totalStakeAmount).times(100).toFixed(2) || '0';
+  }, [votedStakeAmount, totalStakeAmount]);
 
   const votedPercent = useMemo(() => {
-    const _percent = Number(_votedPercent);
-    const lastProgress = PROGRESS[PROGRESS.length - 1];
-    if (voteFinishedAt) {
-      if (_percent >= lastProgress) return _votedPercent;
-      return lastProgress.toFixed(2);
-    }
     return _votedPercent;
-  }, [_votedPercent, voteFinishedAt]);
+  }, [_votedPercent]);
 
   const getTotalVotedStake = useCallback(async () => {
     const data = await viewFunction({
@@ -59,12 +55,13 @@ function useVoteContainer(): UseVoteContainer {
       method: 'get_total_voted_stake',
     });
     logger.debug('get_total_voted_stake', data);
-    if (!Array.isArray(data) && data.length !== 2) {
+    if (!Array.isArray(data) || data.length !== 3) {
       logger.error('get_total_voted_stake error', data);
       return;
     }
-    setVotedStakeAmount(Big(data[0]));
-    setTotalVotedStakeAmount(Big(data[1]));
+    setVotedYeaStakeAmount(Big(data[0]));
+    setVotedStakeAmount(Big(data[1]));
+    setTotalStakeAmount(Big(data[2]));
   }, [viewFunction]);
 
   const getResult = useCallback(async () => {
@@ -73,7 +70,7 @@ function useVoteContainer(): UseVoteContainer {
       method: 'get_result',
     });
     logger.debug('get_result', data);
-    setVoteFinishedAt(data || null);
+    setVoteResult(data || false);
   }, [viewFunction]);
 
   const getVotes = useCallback(async () => {
@@ -105,7 +102,7 @@ function useVoteContainer(): UseVoteContainer {
   const { isLoading, error } = useSWR(
     'vote_data',
     async () => {
-      const promises = Promise.all([getTotalVotedStake(), getResult(), getVotes(), getDeadline()]);
+      const promises = Promise.all([getTotalVotedStake(), getVotes(), getDeadline(), getResult()]);
       return await promises;
     },
     // {
@@ -113,9 +110,9 @@ function useVoteContainer(): UseVoteContainer {
     //   revalidateOnReconnect: false,
     // },
   );
-  const votesCount = useMemo(() => {
+  const yesVotesCount = useMemo(() => {
     if (error) return null;
-    return Object.keys(votes).length;
+    return Object.values(votes).filter(([vote]) => vote === 'yes').length;
   }, [votes, error]);
 
   useEffect(() => {
@@ -126,12 +123,13 @@ function useVoteContainer(): UseVoteContainer {
 
   return {
     isLoading,
+    voteResult,
     deadline,
-    voteFinishedAt,
     votes,
-    votesCount,
+    yesVotesCount,
     votedStakeAmount,
-    totalVotedStakeAmount,
+    votedYeaStakeAmount,
+    totalStakeAmount,
     votedPercent,
     progressList: PROGRESS,
   };
